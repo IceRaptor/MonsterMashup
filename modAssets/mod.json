@@ -1,0 +1,53 @@
+{
+    "Name": "MonsterMashup",
+    "Enabled": true,
+	"Hidden": true,
+    "Version": "0.1.0",
+    "Description": "Builds monster units by mashing bases and turrets",
+    "Author": "FrostRaptor",
+    "Website": "https://github.com/IceRaptor/MonsterMashup/",
+    "Contact": "",
+    "DLL": "MonsterMashup.dll",
+    "DependsOn" : [ "IRBTModUtils", "CustomComponents", "Custom Ammo Categories", "CustomUnits" ],
+    "OptionallyDependsOn": [ ],
+    "ConflictsWith": [ ],
+	"Manifest" : [
+		{
+			"Type": "TurretChassisDef",
+			"Path": "turretChassis",
+			"AddToDB": true
+		},
+		{
+			"Type": "TurretDef",
+			"Path": "turret",
+			"AddToDB": true
+		}		
+	],
+    "Settings": {
+        "Debug" : false,
+        "Trace" : false,
+		
+		"Mashups" : {
+			"Vehicles" : {
+				"vehicledef_OVERLORD_DROPSHIP" : {
+					"attachments" : [
+						{
+							"attach_point" : "turret_attach_0",
+							"TurretDefId": "turretdef_overlord_ppcs",
+							"PilotDefId": "pilot_d5_turret",
+							"LinkInitiative" : true
+						},
+						{
+							"attach_point" : "turret_attach_1",
+							"TurretDefId": "turretdef_overlord_ppcs",
+							"PilotDefId": "pilot_d5_turret",
+							"LinkInitiative" : true
+						}
+
+					]
+				}
+			}
+		}
+
+    }
+}

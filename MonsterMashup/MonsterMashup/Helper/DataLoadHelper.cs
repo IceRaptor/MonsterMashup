@@ -133,8 +133,10 @@ namespace MonsterMashup.Helper
                         turret.Init(attachTransform.position, attachTransform.rotation.eulerAngles.y, true);
                         turret.InitGameRep(null);
 
-                        Mod.Log.Info?.Write($" Spawned support turret, adding to team.");
-                        parent.team.SupportUnits.Add(turret);
+                        //Mod.Log.Info?.Write($" Spawned support turret, adding to team.");
+                        //parent.team.SupportUnits.Add(turret);
+                        Mod.Log.Info?.Write($" Spawned turret, adding to team.");
+                        parent.team.AddUnit(turret);
                         turret.AddToTeam(parent.team);
                         turret.AddToLance(parent.lance);
 

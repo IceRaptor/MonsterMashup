@@ -74,7 +74,9 @@
     <Compile Include="ModInit.cs" />
     <Compile Include="ModState.cs" />
     <Compile Include="ModText.cs" />
-    <Compile Include="Patch\CombatGameStatePatches.cs" />
+    <Compile Include="Patch\UnitSpawnPointGameLogicPatch.cs" />
+    <Compile Include="Patch\ActorMovementSequencePatch.cs" />
+    <Compile Include="Patch\CombatGameStatePatch.cs" />
     <Compile Include="Patch\TeamPatch.cs" />
     <Compile Include="Patch\TurnDirectorPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

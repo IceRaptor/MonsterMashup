@@ -17,11 +17,11 @@ namespace MonsterMashup
         public const string LogName = "monster_mashup";
         public const string LogLabel = "MMASH";
 
-        public static DeferringLogger Log;
+        internal static DeferringLogger Log;
 
         public static string ModDir;
-        public static ModConfig Config;
-        public static ModText LocalizedText;
+        internal static ModConfig Config;
+        internal static ModText LocalizedText;
 
         public static readonly Random Random = new Random();
 

@@ -30,7 +30,10 @@
 		
 	],
     "Settings": {
-        "Debug" : false,
+        "Debug" : true,
         "Trace" : false
-    }
+    },
+	"DeveloperOptions" : {
+		"EnableFootprintVis" : true
+	}
 }

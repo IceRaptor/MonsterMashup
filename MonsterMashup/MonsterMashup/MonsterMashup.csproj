@@ -64,15 +64,22 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\steam\SteamApps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component\LinkedTurretComponent.cs" />
+    <Compile Include="Helper\DataLoadHelper.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModConstants.cs" />
     <Compile Include="ModInit.cs" />
     <Compile Include="ModState.cs" />
     <Compile Include="ModText.cs" />
+    <Compile Include="Patch\CombatGameStatePatches.cs" />
+    <Compile Include="Patch\TeamPatch.cs" />
+    <Compile Include="Patch\TurnDirectorPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist "$(BattleTechGame)\Mods\MonsterMashup" (

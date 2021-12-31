@@ -21,33 +21,16 @@
 			"Type": "TurretDef",
 			"Path": "turret",
 			"AddToDB": true
-		}		
+		},
+		{
+			"Type": "UpgradeDef",
+			"Path": "upgrade",
+			"AddToDB": true
+		},
+		
 	],
     "Settings": {
         "Debug" : false,
-        "Trace" : false,
-		
-		"Mashups" : {
-			"Vehicles" : {
-				"vehicledef_OVERLORD_DROPSHIP" : {
-					"attachments" : [
-						{
-							"attach_point" : "turret_attach_0",
-							"TurretDefId": "turretdef_overlord_ppcs",
-							"PilotDefId": "pilot_d5_turret",
-							"LinkInitiative" : true
-						},
-						{
-							"attach_point" : "turret_attach_1",
-							"TurretDefId": "turretdef_overlord_ppcs",
-							"PilotDefId": "pilot_d5_turret",
-							"LinkInitiative" : true
-						}
-
-					]
-				}
-			}
-		}
-
+        "Trace" : false
     }
 }

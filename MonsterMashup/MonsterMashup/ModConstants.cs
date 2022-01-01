@@ -9,6 +9,10 @@ namespace MonsterMashup
 
     public class ModStats
     {
+        public const string Linked_Parent_Actor_UID = "MMASH_Linked_Parent_Actor_UID";
+        public const string Linked_Parent_MechComp_UID = "MMASH_Linked_Parent_MechComp_UID";
+        public const string Linked_Child_UID = "MMASH_Linked_Child_GUID";
+
         // HBS Values
         public const string HBS_HeatSinkCapacity = "HeatSinkCapacity";
     }

@@ -65,21 +65,28 @@
       <HintPath>E:\steam\SteamApps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\steam\SteamApps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Component\LinkedTurretComponent.cs" />
     <Compile Include="Helper\DataLoadHelper.cs" />
+    <Compile Include="Helper\LinkedEntityHelper.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModConstants.cs" />
     <Compile Include="ModInit.cs" />
     <Compile Include="ModState.cs" />
     <Compile Include="ModText.cs" />
+    <Compile Include="Patch\AbstractActorPatch.cs" />
+    <Compile Include="Patch\MechPatch.cs" />
+    <Compile Include="Patch\MechComponentPatch.cs" />
     <Compile Include="Patch\UnitSpawnPointGameLogicPatch.cs" />
-    <Compile Include="Patch\ActorMovementSequencePatch.cs" />
-    <Compile Include="Patch\CombatGameStatePatch.cs" />
     <Compile Include="Patch\TeamPatch.cs" />
     <Compile Include="Patch\TurnDirectorPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\FootprintVisualization.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

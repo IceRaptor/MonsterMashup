@@ -4,6 +4,7 @@ using BattleTech.UI;
 using IRBTModUtils;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
+using MonsterMashup.UI;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -18,14 +19,22 @@ namespace MonsterMashup
         internal static Team TargetAllyTeam = null;
         internal static Team HostileToAllTeam = null;
 
-        internal static Dictionary<AbstractActor, List<LinkedTurretComponent>> LinkedActors = new Dictionary<AbstractActor, List<LinkedTurretComponent>>();
+        internal static List<(MechComponent source, LinkedTurretComponent linkedTurret)> ComponentsToLink = new List<(MechComponent source, LinkedTurretComponent linkedTurret)>();
+
+        internal static Dictionary<string, FootprintVisualization> FootprintVisuals = new Dictionary<string, FootprintVisualization>();
 
         internal static void Reset() {
             TargetTeam = null;
             TargetAllyTeam = null;
             HostileToAllTeam = null;
 
-            LinkedActors.Clear();
+            ComponentsToLink.Clear();
+
+            foreach (FootprintVisualization footprintVis in FootprintVisuals.Values)
+            {
+                footprintVis.DestroyUI();
+            }
+            FootprintVisuals.Clear();
         }
     }
 

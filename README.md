@@ -9,7 +9,11 @@ This mod for the [HBS BattleTech](http://battletechgame.com/) game
 - Allow setting LoS on component
 - How to allow mutable pilotDefs?
 - Handle units that spawn during play (do we want to allow this)
+- Should we be able to disable 'back' / 'side' bonuses?
 - Mark spaces as occupied; maybe
+- Clicking on model can be pretty tough; have to use tab to select reliably
+- Rename spawned turret GO to reflect parent + attach? 
+- Camera can fly into the mesh
 
 public void RebuildPathingForNoMovement()
 {

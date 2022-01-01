@@ -40,4 +40,17 @@ namespace MonsterMashup.Patch
             }
         }
     }
+
+    [HarmonyPatch(typeof(TurnDirector), "OnCombatGameDestroyed")]
+    static class TurnDirector_OnCombatGameDestroyed
+    {
+
+        static void Postfix()
+        {
+            Mod.Log.Trace?.Write("TD:OCGD - entered.");
+
+            // Reset any combat state
+            ModState.Reset();
+        }
+    }
 }

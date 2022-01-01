@@ -41,8 +41,11 @@ namespace MonsterMashup.Patch
                     }
 
                     // Create a new footprint visualization for the unit, to show what ground it covers
-                    FootprintVisualization footprintVis = new FootprintVisualization("mmash_fprintvis_" + __result.DistinctId());
-                    ModState.FootprintVisuals.Add(__result.DistinctId(), footprintVis);
+                    if (Mod.Config.DeveloperOptions.EnableFootprintVis)
+                    {
+                        FootprintVisualization footprintVis = new FootprintVisualization(__result);
+                        ModState.FootprintVisuals.Add(__result.DistinctId(), footprintVis);
+                    }
                 }
             }
         }

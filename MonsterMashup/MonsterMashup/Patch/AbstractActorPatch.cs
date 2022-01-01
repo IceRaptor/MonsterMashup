@@ -62,13 +62,12 @@ namespace MonsterMashup.Patch
     { 
         static void Postfix(AbstractActor __instance, VisibilityLevel newLevel)
         {
-            Mod.Log.Info?.Write("AA:OnPlayerVisibilityChanged:Getter INVOKED");
+            Mod.Log.Info?.Write($"AA:OnPlayerVisibilityChanged:Getter INVOKED for: {__instance.DistinctId()}");
             if (newLevel == VisibilityLevel.LOSFull)
             {
                 if (ModState.FootprintVisuals.TryGetValue(__instance.DistinctId(), out FootprintVisualization footprintVis)) 
                 {
                     Mod.Log.Info?.Write($"Showing footprint visualization for actor: {__instance.DistinctId()}");
-                    footprintVis.OnActorChange(__instance);
                     footprintVis.Show();
                 }
             }

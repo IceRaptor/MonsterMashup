@@ -19,6 +19,7 @@ namespace MonsterMashup
 
     public class ModConsts
     {
-        public const string Container_GO_ID = "cbtbe_melee_container";
+        public const string Footprint_GO = "mmash_footprint_viz_";
+        public const float MetersPerHex = 24f;
     }
 }

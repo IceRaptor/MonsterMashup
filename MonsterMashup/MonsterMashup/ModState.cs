@@ -32,7 +32,7 @@ namespace MonsterMashup
 
             foreach (FootprintVisualization footprintVis in FootprintVisuals.Values)
             {
-                footprintVis.DestroyUI();
+                footprintVis.Destroy();
             }
             FootprintVisuals.Clear();
         }

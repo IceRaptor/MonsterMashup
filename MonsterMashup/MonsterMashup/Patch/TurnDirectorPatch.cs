@@ -2,6 +2,7 @@
 using Harmony;
 using IRBTModUtils;
 using MonsterMashup.Helper;
+using MonsterMashup.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,21 @@ namespace MonsterMashup.Patch
             {
                 Mod.Log.Error?.Write(e, "Failed to load ambush resources due to exception!");
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(TurnDirector), "StartFirstRound")]
+    static class TurnDirector_StartFirstRound
+    {
+
+        static void Postfix()
+        {
+            Mod.Log.Trace?.Write("TD:StartFirstRound - entered.");
+            foreach (FootprintVisualization footprintVis in ModState.FootprintVisuals.Values)
+            {
+                footprintVis.Init();
+            }
+
         }
     }
 

@@ -2,6 +2,7 @@
 using BattleTech.Rendering.UI;
 using BattleTech.UI;
 using IRBTModUtils;
+using IRBTModUtils.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,17 +19,49 @@ namespace MonsterMashup.UI
     internal class FootprintVisualization
     {
         internal GameObject TopLevelGO;
+        internal AbstractActor source;
 
-        private List<GameObject> _unusedDotPool = new List<GameObject>();
-        private List<GameObject> _usedDotPool = new List<GameObject>();
-        // TODO: FIx this to allow arbtirary circles
-        private Mesh _circleMesh = GenerateCircleMesh(4, 20);
-        private Vector3 _groundOffset = 2 * Vector3.up;
+        private List<GameObject> dots = new List<GameObject>();
+        List<Vector3> adjacentHexes = new List<Vector3>();
+        private Mesh circleMesh = GenerateCircleMesh(4, 20); // Generate a mesh with a 4 meter radius and 20 verts
+        private Vector3 groundOffset = 2 * Vector3.up;
 
-        public FootprintVisualization(string name)
+        public FootprintVisualization(AbstractActor actor)
         {
-            TopLevelGO = new GameObject(name);
+            Mod.Log.Info?.Write($"Creating footprint visualization for actor: {actor.DistinctId()}");
+            this.source = actor;
+
+            string goName = ModConsts.Footprint_GO + actor.DistinctId();
+            Mod.Log.Info?.Write($" -- goName: {goName}");
+            TopLevelGO = new GameObject(goName);
             TopLevelGO.SetActive(false);
+            TopLevelGO.transform.position = actor.CurrentPosition;
+
+            int hexRadius = (int) Math.Ceiling(actor.Radius / ModConsts.MetersPerHex);
+            Mod.Log.Info?.Write($" -- hexRadius: {hexRadius}");
+            adjacentHexes = SharedState.Combat.HexGrid.GetGridPointsAroundPointWithinRadius(actor.CurrentPosition, hexRadius);
+        }
+
+        public void Init()
+        {
+            if (dots.Count == 0)
+            {
+                // Initialize Dots
+                try
+                {
+                    Mod.Log.Info?.Write($" -- building hex points for: {adjacentHexes.Count} hexes");
+                    foreach (Vector3 hexPos in adjacentHexes)
+                    {
+                        Mod.Log.Info?.Write($" ---- Hex point at pos: {hexPos}");
+                        GameObject dot = CreateDot(hexPos, Color.red);
+                        this.dots.Add(dot);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Mod.Log.Warn?.Write(e, "Failed to create hex point!");
+                }
+            }
         }
 
         public void Show()
@@ -38,84 +71,38 @@ namespace MonsterMashup.UI
 
         public void Hide()
         {
-            foreach (var dot in _usedDotPool)
-                dot.SetActive(false);
-
-            _unusedDotPool.AddRange(_usedDotPool);
-            _usedDotPool.Clear();
             TopLevelGO.SetActive(false);
         }
-        public void DestroyUI()
+
+        public void Destroy()
         {
             GameObject.Destroy(TopLevelGO);
         }
 
-        public void OnActorChange(AbstractActor unit)
+        private GameObject CreateDot(Vector3 location, Color color)
         {
-            Hide();
-
-            /*
-             *                 
-                List<Vector3> adjacentHexes = ModState.Combat.HexGrid.GetGridPointsAroundPointWithinRadius(ambushOrigin, 3); // 3 hexes should cover most large buidlings
-                foreach (Vector3 adjacentHex in adjacentHexes)
-                {
-                    if (actorsToSpawn == 0) break;
-
-                    Point cellPoint = new Point(ModState.Combat.MapMetaData.GetXIndex(adjacentHex.x), ModState.Combat.MapMetaData.GetZIndex(adjacentHex.z));
-            */
-
-            MapTerrainDataCell unitOrigin = unit.Combat.MapMetaData.GetCellAt(unit.CurrentPosition);
-            List<Vector3> adjacentHexes = SharedState.Combat.HexGrid.GetGridPointsAroundPointWithinRadius(unit.CurrentPosition, 4);
-
-            foreach (Vector3 hexPos in adjacentHexes)
-            {
-                ShowDotAt(hexPos, Color.red);
-            }
-
-            TopLevelGO.transform.position = unit.CurrentPosition;
-        }
-
-        private void ShowDotAt(Vector3 location, Color color)
-        {
-            GameObject dot;
-            if (_unusedDotPool.Count > 0)
-            {
-                dot = _unusedDotPool[0];
-                _unusedDotPool.RemoveAt(0);
-            }
-            else
-            {
-                dot = GenerateDot($"dot_{_unusedDotPool.Count + _usedDotPool.Count}");
-            }
-
-            _usedDotPool.Add(dot);
-
-            Vector3 terrainHeight = SharedState.Combat.MapMetaData.GetLerpedHeightAt(location, true) * Vector3.up;
-            dot.transform.position = location + _groundOffset + terrainHeight;
-            dot.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-
-            var renderer = dot.GetComponent<MeshRenderer>();
-            renderer.material.color = color;
-
-            dot.SetActive(true);
-        }
-
-
-        private GameObject GenerateDot(string name)
-        {
-            var dot = new GameObject(name);
+            Mod.Log.Debug?.Write("1");
+            string dotName = $"dot_{this.dots.Count}";
+            Mod.Log.Debug?.Write("--1");
+            GameObject dot = new GameObject(dotName);
+            Mod.Log.Debug?.Write("--2");
             dot.transform.SetParent(TopLevelGO.transform);
 
+            Mod.Log.Debug?.Write("--3");
             var meshFilter = dot.AddComponent<MeshFilter>();
-            meshFilter.sharedMesh = _circleMesh;
+            meshFilter.sharedMesh = circleMesh;
 
+            Mod.Log.Debug?.Write("--4");
             var meshRenderer = dot.AddComponent<MeshRenderer>();
+            Mod.Log.Debug?.Write("--5");
             var movementDot = CombatMovementReticle.Instance.movementDotTemplate;
+            Mod.Log.Debug?.Write("--6");
             meshRenderer.material = movementDot.GetComponent<MeshRenderer>().sharedMaterial;
             meshRenderer.material.enableInstancing = false;
             meshRenderer.receiveShadows = false;
             meshRenderer.shadowCastingMode = ShadowCastingMode.Off;
 
+            Mod.Log.Debug?.Write("--7");
             var collider = dot.AddComponent<CapsuleCollider>();
             collider.center = Vector3.zero;
             collider.radius = 5f;
@@ -123,6 +110,16 @@ namespace MonsterMashup.UI
             collider.isTrigger = true;
 
             dot.AddComponent<UISweep>();
+
+            Mod.Log.Debug?.Write("2");
+            Vector3 terrainHeight = SharedState.Combat.MapMetaData.GetLerpedHeightAt(location, true) * Vector3.up;
+            dot.transform.position = location + groundOffset + terrainHeight;
+            dot.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+
+            Mod.Log.Debug?.Write("3");
+            var renderer = dot.GetComponent<MeshRenderer>();
+            renderer.material.color = color;
+            Mod.Log.Debug?.Write("4");
 
             return dot;
         }
@@ -150,9 +147,11 @@ namespace MonsterMashup.UI
                 triangleList.Add(vertexList.Count);
                 vertexList.Add(quaternion * vertexList[vertexList.Count - 1]);
             }
-            var mesh = new Mesh();
-            mesh.vertices = vertexList.ToArray();
-            mesh.triangles = triangleList.ToArray();
+            var mesh = new Mesh
+            {
+                vertices = vertexList.ToArray(),
+                triangles = triangleList.ToArray()
+            };
 
             return mesh;
         }

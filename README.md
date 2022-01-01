@@ -2,10 +2,11 @@
 This mod for the [HBS BattleTech](http://battletechgame.com/) game 
 
 ## TODO
-- Link init of units. Maybe use support unit construct to avoid init tracking?
+- [DONE] Link init of units. Maybe use support unit construct to avoid init tracking?
   - Otherwise, have to sync
-- Should component death == dead turret? In case of location destruction, yes
-- On parent death, kill turret
+- [DONE] Should component death == dead turret? In case of location destruction, yes
+- [DONE] On parent death, kill turret
+- On turret death, destroy parent component
 - Allow setting LoS on component
 - How to allow mutable pilotDefs?
 - Handle units that spawn during play (do we want to allow this)
@@ -14,6 +15,7 @@ This mod for the [HBS BattleTech](http://battletechgame.com/) game
 - Clicking on model can be pretty tough; have to use tab to select reliably
 - Rename spawned turret GO to reflect parent + attach? 
 - Camera can fly into the mesh
+- Pathfinder should block area around unit
 
 public void RebuildPathingForNoMovement()
 {

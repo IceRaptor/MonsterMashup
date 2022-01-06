@@ -1,9 +1,9 @@
 {
   "Custom": {
 	"LinkedTurret": {
-	  "TurretDefId" : "turretdef_overlord_ppc",
+	  "TurretDefId" : "turretdef_overlord_mid_missile",
 	  "PilotDefId" : "pilot_d3_turret",
-	  "AttachPoint" : "turret_attach_top_0",
+	  "AttachPoint" : "turret_attach_mid_front",
 	  "LinkInitiative" : true
 	}
   },
@@ -17,7 +17,7 @@
     "Manufacturer": "Lucius",
     "Model": "T-80",
     "UIName": "Turret",
-    "Id": "Gear_Overlord_Turret_Top_Front",
+    "Id": "Gear_Overlord_Turret_Mid_Front",
     "Name": "FOO",
     "Details": "BAR",
     "Icon": "uixSvgIcon_special_Equipment"

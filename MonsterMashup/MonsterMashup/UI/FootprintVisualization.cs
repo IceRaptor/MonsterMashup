@@ -49,10 +49,8 @@ namespace MonsterMashup.UI
                 // Initialize Dots
                 try
                 {
-                    Mod.Log.Info?.Write($" -- building hex points for: {adjacentHexes.Count} hexes");
                     foreach (Vector3 hexPos in adjacentHexes)
                     {
-                        Mod.Log.Info?.Write($" ---- Hex point at pos: {hexPos}");
                         GameObject dot = CreateDot(hexPos, Color.red);
                         this.dots.Add(dot);
                     }
@@ -81,28 +79,20 @@ namespace MonsterMashup.UI
 
         private GameObject CreateDot(Vector3 location, Color color)
         {
-            Mod.Log.Debug?.Write("1");
             string dotName = $"dot_{this.dots.Count}";
-            Mod.Log.Debug?.Write("--1");
             GameObject dot = new GameObject(dotName);
-            Mod.Log.Debug?.Write("--2");
             dot.transform.SetParent(TopLevelGO.transform);
 
-            Mod.Log.Debug?.Write("--3");
             var meshFilter = dot.AddComponent<MeshFilter>();
             meshFilter.sharedMesh = circleMesh;
 
-            Mod.Log.Debug?.Write("--4");
             var meshRenderer = dot.AddComponent<MeshRenderer>();
-            Mod.Log.Debug?.Write("--5");
             var movementDot = CombatMovementReticle.Instance.movementDotTemplate;
-            Mod.Log.Debug?.Write("--6");
             meshRenderer.material = movementDot.GetComponent<MeshRenderer>().sharedMaterial;
             meshRenderer.material.enableInstancing = false;
             meshRenderer.receiveShadows = false;
             meshRenderer.shadowCastingMode = ShadowCastingMode.Off;
 
-            Mod.Log.Debug?.Write("--7");
             var collider = dot.AddComponent<CapsuleCollider>();
             collider.center = Vector3.zero;
             collider.radius = 5f;
@@ -111,15 +101,12 @@ namespace MonsterMashup.UI
 
             dot.AddComponent<UISweep>();
 
-            Mod.Log.Debug?.Write("2");
             Vector3 terrainHeight = SharedState.Combat.MapMetaData.GetLerpedHeightAt(location, true) * Vector3.up;
             dot.transform.position = location + groundOffset + terrainHeight;
             dot.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
 
-            Mod.Log.Debug?.Write("3");
             var renderer = dot.GetComponent<MeshRenderer>();
             renderer.material.color = color;
-            Mod.Log.Debug?.Write("4");
 
             return dot;
         }

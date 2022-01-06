@@ -1,7 +1,7 @@
 {
 	"Description" : {
-		"Id" : "turretchassisdef_overlord_ppc",
-		"Name" : "Overlord PPC Turret",
+		"Id" : "turretchassisdef_overlord_top_ballistic",
+		"Name" : "Overlord Top Ballistic Turret",
 		"Details" : "",
 		"Icon" : "TURRET",
 		"Cost" : 993,
@@ -10,9 +10,9 @@
 	},
 	"MovementCapDefID" : "",
 	"PathingCapDefID" : "",
-   	"HardpointDataDefID" : "hardpointdatadef_turretlaser",
-	"PrefabIdentifier" : "chrPrfTrt_turretlaser",
-	"PrefabBase" : "turretlaser",
+   	"HardpointDataDefID" : "hardpointdatadef_overlord_turret_top_ballistic",
+	"PrefabIdentifier" : "chrprftrt_overlord_turret_top_ballistic",
+	"PrefabBase" : "overlord_turret_top_ballistic",
 	"weightClass" : "MEDIUM",
     "Tonnage" : 100,
     "InventorySlots" : 20,

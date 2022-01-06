@@ -112,39 +112,79 @@ namespace MonsterMashup.Helper
 
                     PilotDef pilotDef = SharedState.Combat.DataManager.PilotDefs.Get(linkedTurret.PilotDefId);
                     TurretDef turretDef = SharedState.Combat.DataManager.TurretDefs.GetOrCreate(linkedTurret.TurretDefId);
-                    turretDef.Refresh();
+                    try
+                    {
+                        turretDef.Refresh();
 
-                    if (turretDef == null || pilotDef == null) Mod.Log.Error?.Write($"Failed to LOAD turretDefId: {linkedTurret.TurretDefId} + pilotDefId: {linkedTurret.PilotDefId} !");
+                        if (turretDef == null || pilotDef == null) Mod.Log.Error?.Write($"Failed to LOAD turretDefId: {linkedTurret.TurretDefId} + pilotDefId: {linkedTurret.PilotDefId} !");
 
-                    Turret turret = ActorFactory.CreateTurret(turretDef, pilotDef, parent.EncounterTags, SharedState.Combat, parent.team.GetNextSupportUnitGuid(), "", null);
-                    if (turret == null) Mod.Log.Error?.Write($"Failed to SPAWN turretDefId: {linkedTurret.TurretDefId} + pilotDefId: {linkedTurret.PilotDefId} !");
+                        Turret turret = ActorFactory.CreateTurret(turretDef, pilotDef, parent.EncounterTags, SharedState.Combat, parent.team.GetNextSupportUnitGuid(), "", null);
+                        if (turret == null)
+                        {
+                            Mod.Log.Warn?.Write($"Failed to SPAWN turretDefId: {linkedTurret.TurretDefId} + pilotDefId: {linkedTurret.PilotDefId} !");
+                            continue;
+                        }
 
-                    Mod.Log.Info?.Write($" Attach point is: {attachTransform.position}  rotation: {attachTransform.rotation.eulerAngles}");
-                    Mod.Log.Info?.Write($" Parent position is: {parent.GameRep.transform.position}  rotation: {parent.GameRep.transform.rotation.eulerAngles}");
-                    turret.Init(attachTransform.position, attachTransform.rotation.eulerAngles.y, true);
-                    turret.InitGameRep(null);
+                        Mod.Log.Info?.Write($" Attach point is: {attachTransform.position}  rotation: {attachTransform.rotation.eulerAngles}");
+                        Mod.Log.Info?.Write($" Parent position is: {parent.GameRep.transform.position}  rotation: {parent.GameRep.transform.rotation.eulerAngles}");
 
-                    turret.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, turret, BehaviorTreeIDEnum.CoreAITree);
-                    Mod.Log.Debug?.Write("Updated turret behaviorTree");
+                        
+                        //turret.Init(attachTransform.position, alignVector.y, true);
+                        //turret.Init(attachTransform.position, attachTransform.rotation.eulerAngles.y, true);
+                        turret.Init(attachTransform.position, attachTransform.rotation.eulerAngles.z, true);
+                        turret.InitGameRep(null);
+                        Mod.Log.Info?.Write($" Turret start position: {turret.GameRep.transform.position}  rotation: {turret.GameRep.transform.rotation.eulerAngles}");
+                        //turret.InitGameRep(attachTransform);
+                        //turret.GameRep.transform.LookAt(attachTransform.position + attachTransform.forward, Vector3.up);
 
-                    Mod.Log.Info?.Write($" Spawned turret, adding to team.");
-                    parent.team.AddUnit(turret);
-                    turret.AddToTeam(parent.team);
-                    turret.AddToLance(parent.lance);
+                        //turret.GameRep.transform.rotation = Quaternion.FromToRotation(Vector3.up, attachTransform.forward);
 
-                    // Notify everything else that the turret is active
-                    UnitSpawnedMessage message = new UnitSpawnedMessage("MONSTER_MASH", turret.GUID);
-                    SharedState.Combat.MessageCenter.PublishMessage(message);
+                        // THIS PUTS THEM ALL VERTICAL BUT ALIGNED PROPERLY
+                        //turret.GameRep.transform.rotation = Quaternion.RotateTowards(turret.GameRep.transform.rotation, attachTransform.rotation, 9999f);                        
 
-                    // Finally force the turret to be fully visible
-                    turret.OnPlayerVisibilityChanged(VisibilityLevel.LOSFull);
-                    Mod.Log.Info?.Write($" Turret should be player visible.");
+                        Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
+                        turret.GameRep.transform.rotation = Quaternion.RotateTowards(turret.GameRep.transform.rotation, alignVector, 9999f);
+                        Mod.Log.Info?.Write($" Turret rotated position: {turret.GameRep.transform.position}  rotation: {turret.GameRep.transform.rotation.eulerAngles}");
 
-                    // Finally write linking stats for component and turret
-                    Mod.Log.Info?.Write($" Bi-directionally linking turret: {turret.uid} to component: {sourceComponent.parent.uid}:{sourceComponent.uid}");
-                    sourceComponent.StatCollection.AddStatistic<string>(ModStats.Linked_Child_UID, turret.uid, null);
-                    sourceComponent.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_Actor_UID, sourceComponent.parent.uid, null);
-                    sourceComponent.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_MechComp_UID, sourceComponent.uid, null);
+                        //Quaternion zeroRot = Quaternion.Euler(0f, 0f, 0f);
+                        //Vector3 alignVector = attachTransform.position + attachTransform.forward;
+                        //turret.GameRep.transform.rotation = Quaternion.RotateTowards(turret.GameRep.transform.rotation, alignVector, 180f);
+                        //turret.GameRep.transform.eulerAngles = alignVector;
+
+                        // Update rotation to match that attach point's rotation
+                        //Vector3 alignVector = attachTransform.position + attachTransform.forward;
+                        //Mod.Log.Info?.Write($" Aligning turret rotation to: {alignVector}");
+                        //turret.GameRep.transform.LookAt(attachTransform.position + attachTransform.forward, Vector3.zero);
+                        //custRep.UpdateRotation(custRep.transform, custRep.transform.forward, 9999f);
+                        //moveTransform.LookAt(moveTransform.position + forward, Vector3.up);
+
+                        turret.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, turret, BehaviorTreeIDEnum.CoreAITree);
+                        Mod.Log.Debug?.Write("Updated turret behaviorTree");
+
+                        Mod.Log.Info?.Write($" Spawned turret, adding to team.");
+                        parent.team.AddUnit(turret);
+                        turret.AddToTeam(parent.team);
+                        turret.AddToLance(parent.lance);
+
+                        // Notify everything else that the turret is active
+                        UnitSpawnedMessage message = new UnitSpawnedMessage("MONSTER_MASH", turret.GUID);
+                        SharedState.Combat.MessageCenter.PublishMessage(message);
+
+                        // Finally force the turret to be fully visible
+                        turret.OnPlayerVisibilityChanged(VisibilityLevel.LOSFull);
+                        Mod.Log.Info?.Write($" Turret should be player visible.");
+
+                        // Finally write linking stats for component and turret
+                        Mod.Log.Info?.Write($" Bi-directionally linking turret: {turret.uid} to component: {sourceComponent.parent.uid}:{sourceComponent.uid}");
+                        sourceComponent.StatCollection.AddStatistic<string>(ModStats.Linked_Child_UID, turret.uid, null);
+                        turret.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_Actor_UID, sourceComponent.parent.uid, null);
+                        turret.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_MechComp_UID, sourceComponent.uid, null);
+                    }
+                    catch (Exception e)
+                    {
+                        Mod.Log.Error?.Write(e, $"Failed to SPAWN turretDefId: {linkedTurret.TurretDefId} + pilotDefId: {linkedTurret.PilotDefId} !");
+                    }
+
                 }
             }
             catch (Exception e)

@@ -59,7 +59,9 @@ namespace MonsterMashup.Patch
 
     [HarmonyPatch(typeof(AbstractActor), "OnPlayerVisibilityChanged")]
     static class AbstractActor_OnPlayerVisibilityChanged
-    { 
+    {
+        static bool Prepare() => Mod.Config.DeveloperOptions.EnableFootprintVis;
+
         static void Postfix(AbstractActor __instance, VisibilityLevel newLevel)
         {
             Mod.Log.Info?.Write($"AA:OnPlayerVisibilityChanged:Getter INVOKED for: {__instance.DistinctId()}");

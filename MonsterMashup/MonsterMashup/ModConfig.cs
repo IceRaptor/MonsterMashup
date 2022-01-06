@@ -7,14 +7,14 @@ using System.Text;
 namespace MonsterMashup
 {
 
-    internal class ModConfig
+    public class ModConfig
     {
         public bool Debug = false;
         public bool Trace = false;
 
         public DeveloperOpts DeveloperOptions = new DeveloperOpts();
 
-        internal bool LinkChildInitiative = true;
+        public bool LinkChildInitiative = true;
 
         public void LogConfig()
         {
@@ -25,14 +25,15 @@ namespace MonsterMashup
 
             Mod.Log.Info?.Write(" -- Developer Options --");
             Mod.Log.Info?.Write($" EnableFootprintVisualization: {this.DeveloperOptions.EnableFootprintVis}");
+            Mod.Log.Info?.Write($" DebugDamageLocationKillsLinkedTurrets: {this.DeveloperOptions.DebugDamageLocationKillsLinkedTurrets}");
 
             Mod.Log.Info?.Write("=== MOD CONFIG END ===");
         }
 
-        internal class DeveloperOpts
+        public class DeveloperOpts
         {
-            internal bool EnableFootprintVis = true;
-            internal bool DebugDamageLocationKillsLinkedTurrets = true;
+            public bool EnableFootprintVis = true;
+            public bool DebugDamageLocationKillsLinkedTurrets = true;
 
         }
 

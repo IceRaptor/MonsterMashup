@@ -31,10 +31,11 @@
 	],
     "Settings": {
         "Debug" : true,
-        "Trace" : false
+        "Trace" : false,
+		"DeveloperOptions" : {
+			"EnableFootprintVis" : false,
+			"DebugDamageLocationKillsLinkedTurrets" : true
+		}			
     },
-	"DeveloperOptions" : {
-		"EnableFootprintVis" : true,
-		"DebugDamageLocationKillsLinkedTurrets" : true
-	}
+
 }

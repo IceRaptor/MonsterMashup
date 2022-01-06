@@ -24,7 +24,7 @@
     "SensorRangeMultiplier" : 1,
     "Signature" : 0,
     "Radius" : 4,
-    "FiringArcDegrees" : 360,
+    "FiringArcDegrees" : 90,
 	"Hardpoints" : [
 		{
 			"WeaponMount" : "Energy",

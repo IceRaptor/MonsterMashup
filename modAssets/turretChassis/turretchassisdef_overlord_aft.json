@@ -8,6 +8,9 @@
 		"Rarity" : 0,
 		"Purchasable" : false
 	},
+	"CustomParts": {
+		"FiringArc": 90,
+	},		
 	"MovementCapDefID" : "",
 	"PathingCapDefID" : "",
    	"HardpointDataDefID" : "hardpointdatadef_overlord_turret_aft_mixed",

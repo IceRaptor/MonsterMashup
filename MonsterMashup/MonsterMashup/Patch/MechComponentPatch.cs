@@ -15,7 +15,6 @@ namespace MonsterMashup.Patch
     [HarmonyPatch(typeof(MechComponent), "DamageComponent")]
     static class MechComponent_DamageComponent
     {
-
         static void Postfix(MechComponent __instance, WeaponHitInfo hitInfo, ComponentDamageLevel damageLevel, bool applyEffects)
         {
             Mod.Log.Debug?.Write("MechComponent:DamageComponent - INVOKED");

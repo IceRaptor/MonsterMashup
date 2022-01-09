@@ -74,6 +74,7 @@
     <Compile Include="Component\LinkedTurretComponent.cs" />
     <Compile Include="Helper\DataLoadHelper.cs" />
     <Compile Include="Helper\LinkedEntityHelper.cs" />
+    <Compile Include="Helper\SpawnHelper.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModConstants.cs" />
     <Compile Include="ModInit.cs" />

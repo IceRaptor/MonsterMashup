@@ -34,18 +34,27 @@ namespace MonsterMashup.Helper
             string turretUID = component.StatCollection.GetValue<string>(ModStats.Linked_Child_UID);
             if (turretUID == null) return; // nothing to do
 
-            Mod.Log.Debug?.Write($"MechComponent: {component.UIName} has linked turret, looking up actor by uid: {turretUID}");
-            AbstractActor turretActor = SharedState.Combat.FindActorByGUID(turretUID);
-            if (turretActor != null)
+            try
             {
-                turretActor.GetPilot()?.KillPilot(SharedState.Combat.Constants, "", 0, DamageType.ComponentExplosion, null, null);
-                turretActor.FlagForDeath("Linked Component Destroyed", DeathMethod.ComponentExplosion, DamageType.ComponentExplosion, -1, -1, "", isSilent: false);
-                turretActor.HandleDeath("0");
+                Mod.Log.Debug?.Write($"MechComponent: {component.UIName} has linked turret, looking up actor by uid: {turretUID}");
+                AbstractActor turretActor = SharedState.Combat.FindActorByGUID(turretUID);
+                if (turretActor != null)
+                {
+                    turretActor.GetPilot()?.KillPilot(SharedState.Combat.Constants, "", 0, DamageType.ComponentExplosion, null, null);
+                    turretActor.FlagForDeath("Linked Component Destroyed", DeathMethod.ComponentExplosion, DamageType.ComponentExplosion, -1, -1, "", isSilent: false);
+                    turretActor.HandleDeath("0");
+                    Mod.Log.Info?.Write($"Turret: {turretActor.DistinctId()} successfully destroyed");
+                }
+                else
+                {
+                    Mod.Log.Warn?.Write($"Failed to find linked turret with uid: {turretUID}, cannot kill linked turret!");
+                }
             }
-            else
+            catch (Exception e)
             {
-                Mod.Log.Warn?.Write($"Failed to find linked turret with uid: {turretUID}, cannot kill linked turret!");
+                Mod.Log.Warn?.Write(e, "Failed to kill linked turret!");
             }
+
         }
     }
 }

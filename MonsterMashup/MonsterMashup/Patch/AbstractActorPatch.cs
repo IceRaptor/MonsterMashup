@@ -60,14 +60,36 @@ namespace MonsterMashup.Patch
     [HarmonyPatch(typeof(AbstractActor), "OnPlayerVisibilityChanged")]
     static class AbstractActor_OnPlayerVisibilityChanged
     {
-        static bool Prepare() => Mod.Config.DeveloperOptions.EnableFootprintVis;
+        static bool Prefix(AbstractActor __instance)
+        {
+            Mod.Log.Info?.Write($"AA:OnPlayerVisibilityChanged:PRE INVOKED for: {__instance.DistinctId()}");
+            if (__instance != null)
+            {
+                if (ModState.LinkedTurrets.TryGetValue(__instance.DistinctId(), out AbstractActor parent))
+                {
+                    // Do not show turret icon blips; wait until the entire parent is shown
+                    if (!parent.GameRep.VisibleToPlayer)
+                    {
+                        Mod.Log.Info?.Write($" parent gameRep is not visible to player, skipping");
+                        return false;
+                    }
+                    else
+                    {
+                        Mod.Log.Info?.Write($" parent gameRep is visible to player, showing turret");
+                    }
+                }
+            }
+
+            return true;
+        }
 
         static void Postfix(AbstractActor __instance, VisibilityLevel newLevel)
         {
-            Mod.Log.Info?.Write($"AA:OnPlayerVisibilityChanged:Getter INVOKED for: {__instance.DistinctId()}");
-            if (newLevel == VisibilityLevel.LOSFull)
+            Mod.Log.Info?.Write($"AA:OnPlayerVisibilityChanged:POST INVOKED for: {__instance.DistinctId()}");
+
+            if (newLevel == VisibilityLevel.LOSFull && Mod.Config.DeveloperOptions.EnableFootprintVis)
             {
-                if (ModState.FootprintVisuals.TryGetValue(__instance.DistinctId(), out FootprintVisualization footprintVis)) 
+                if (ModState.FootprintVisuals.TryGetValue(__instance.DistinctId(), out FootprintVisualization footprintVis))
                 {
                     Mod.Log.Info?.Write($"Showing footprint visualization for actor: {__instance.DistinctId()}");
                     footprintVis.Show();

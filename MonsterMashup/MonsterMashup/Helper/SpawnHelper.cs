@@ -122,15 +122,17 @@ namespace MonsterMashup.Helper
                 UnitSpawnedMessage message = new UnitSpawnedMessage("MONSTER_MASH", turret.GUID);
                 SharedState.Combat.MessageCenter.PublishMessage(message);
 
-                // Finally force the turret to be fully visible
-                turret.OnPlayerVisibilityChanged(VisibilityLevel.LOSFull);
-                Mod.Log.Info?.Write($" Turret should be player visible.");
+                // Force the turret to be hidden from the player
+                turret.OnPlayerVisibilityChanged(VisibilityLevel.None);
 
-                // Finally write linking stats for component and turret
+                // Write linking stats for component and turret
                 Mod.Log.Info?.Write($" Bi-directionally linking turret: {turret.uid} to component: {sourceComponent.parent.uid}:{sourceComponent.uid}");
                 sourceComponent.StatCollection.AddStatistic<string>(ModStats.Linked_Child_UID, turret.uid, null);
                 turret.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_Actor_UID, sourceComponent.parent.uid, null);
                 turret.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_MechComp_UID, sourceComponent.uid, null);
+
+                // Populate the modstate
+                ModState.LinkedTurrets.Add(turret.DistinctId(), parent);
             }
             catch (Exception e)
             {

@@ -26,37 +26,37 @@
 	"Locations": [
 		{
 			"Location": "Front",
-			"CurrentArmor": 600,
-			"CurrentInternalStructure": 500,
-			"AssignedArmor": 600,
+			"CurrentArmor": 50,
+			"CurrentInternalStructure": 25,
+			"AssignedArmor": 50,
 			"DamageLevel": "Functional"
 		},
 		{
 			"Location": "Left",
-			"CurrentArmor": 500,
-			"CurrentInternalStructure": 500,
-			"AssignedArmor": 500,
+			"CurrentArmor": 50,
+			"CurrentInternalStructure": 25,
+			"AssignedArmor": 50,
 			"DamageLevel": "Functional"
 		},
 		{
 			"Location": "Right",
-			"CurrentArmor": 500,
-			"CurrentInternalStructure": 500,
-			"AssignedArmor": 500,
+			"CurrentArmor": 50,
+			"CurrentInternalStructure": 25,
+			"AssignedArmor": 50,
 			"DamageLevel": "Functional"
 		},
 		{
 			"Location": "Rear",
-			"CurrentArmor": 500,
-			"CurrentInternalStructure": 500,
-			"AssignedArmor": 500,
+			"CurrentArmor": 50,
+			"CurrentInternalStructure": 25,
+			"AssignedArmor": 50,
 			"DamageLevel": "Functional"
 		},
 		{
 			"Location": "Turret",
-			"CurrentArmor": 300,
-			"CurrentInternalStructure": 500,
-			"AssignedArmor": 300,
+			"CurrentArmor": 50,
+			"CurrentInternalStructure": 25,
+			"AssignedArmor": 50,
 			"DamageLevel": "Functional"
 		}
 	],
@@ -144,13 +144,6 @@
 			"MountedLocation": "Right",
 			"HardpointSlot": -1,
 			"DamageLevel": "Functional"
-		},						
-		{
-			"ComponentDefID": "Gear_DestroyCurrentLocation",
-			"ComponentDefType": "Upgrade",
-			"MountedLocation": "Turret",
-			"HardpointSlot": -1,
-			"DamageLevel": "Functional"
-		}		
+		}
 	]
 }

@@ -14,7 +14,7 @@
 	"UnitTypeName" : "DROPSHIP",
     "Unaffected": {
       "DesignMasks": "true",
-      "Pathing": "true",
+      "Pathing": "false",
       "Fire": "true",
       "Landmines": "true",
       "MoveClamp": 0.3
@@ -35,7 +35,7 @@
   "VisibilityMultiplier": 0.85,
   "SensorRangeMultiplier": 1,
   "Signature": 0,
-  "Radius": 50,
+  "Radius": 65,
   "LOSSourcePositions": [
     {
       "x": 0,

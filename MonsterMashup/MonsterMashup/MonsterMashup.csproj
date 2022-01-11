@@ -80,6 +80,8 @@
     <Compile Include="ModInit.cs" />
     <Compile Include="ModState.cs" />
     <Compile Include="ModText.cs" />
+    <Compile Include="Patch\PathingUtilPatch.cs" />
+    <Compile Include="Patch\LineOfSightPatch.cs" />
     <Compile Include="Patch\AbstractActorPatch.cs" />
     <Compile Include="Patch\MechPatch.cs" />
     <Compile Include="Patch\MechComponentPatch.cs" />

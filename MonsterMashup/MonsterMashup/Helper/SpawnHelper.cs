@@ -74,6 +74,7 @@ namespace MonsterMashup.Helper
             Guid g = Guid.NewGuid();
             string lanceGuid = LanceSpawnerGameLogic.GetLanceGuid(g.ToString());
             lance.lanceGuid = lanceGuid;
+            Mod.Log.Info?.Write($"Created new linked Lance: {lance.lanceGuid} for team: {team.DisplayName}");
             SharedState.Combat.ItemRegistry.AddItem(lance);
             team.lances.Add(lance);
 
@@ -91,7 +92,8 @@ namespace MonsterMashup.Helper
 
                 if (turretDef == null || pilotDef == null) Mod.Log.Error?.Write($"Failed to LOAD turretDefId: {linkedTurret.TurretDefId} + pilotDefId: {linkedTurret.PilotDefId} !");
 
-                Turret turret = ActorFactory.CreateTurret(turretDef, pilotDef, parent.EncounterTags, SharedState.Combat, parent.team.GetNextSupportUnitGuid(), "", null);
+                //Turret turret = ActorFactory.CreateTurret(turretDef, pilotDef, parent.EncounterTags, SharedState.Combat, parent.team.GetNextSupportUnitGuid(), "", null);
+                Turret turret = ActorFactory.CreateTurret(turretDef, pilotDef, new HBS.Collections.TagSet(), SharedState.Combat, parent.team.GetNextSupportUnitGuid(), "", null);
                 if (turret == null)
                 {
                     Mod.Log.Warn?.Write($"Failed to SPAWN turretDefId: {linkedTurret.TurretDefId} + pilotDefId: {linkedTurret.PilotDefId} !");

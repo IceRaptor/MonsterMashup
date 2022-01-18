@@ -35,7 +35,7 @@
   "VisibilityMultiplier": 0.85,
   "SensorRangeMultiplier": 1,
   "Signature": 0,
-  "Radius": 55,
+  "Radius": 15,
   "LOSSourcePositions": [
     {
       "x": 0,

@@ -24,7 +24,7 @@
   "PathingCapDefID": "pathingdef_light_wheeled",
   "HardpointDataDefID": "hardpointdatadef_cuoverlord",
   "PrefabIdentifier": "chrprfmech_overlord_dropship",
-  "PrefabBase": "cuoverlord",
+  "PrefabBase": "cudropshipballturret",
   "Tonnage": 30,
   "weightClass": "LIGHT",
   "BattleValue": 564,
@@ -35,7 +35,7 @@
   "VisibilityMultiplier": 0.85,
   "SensorRangeMultiplier": 1,
   "Signature": 0,
-  "Radius": 65,
+  "Radius": 55,
   "LOSSourcePositions": [
     {
       "x": 0,

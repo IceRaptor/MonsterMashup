@@ -23,7 +23,7 @@ namespace MonsterMashup
 
         internal static Dictionary<string, FootprintVisualization> FootprintVisuals = new Dictionary<string, FootprintVisualization>();
 
-        internal static Dictionary<string, AbstractActor> LinkedTurrets = new Dictionary<string, AbstractActor>();
+        internal static Dictionary<string, AbstractActor> LinkedActors = new Dictionary<string, AbstractActor>();
 
         internal static void Reset() {
             TargetTeam = null;
@@ -38,7 +38,7 @@ namespace MonsterMashup
             }
             FootprintVisuals.Clear();
 
-            LinkedTurrets.Clear();
+            LinkedActors.Clear();
         }
     }
 

@@ -103,8 +103,18 @@ namespace MonsterMashup.Helper
                 Mod.Log.Info?.Write($" Attach point is: {attachTransform.position}  rotation: {attachTransform.rotation.eulerAngles}");
                 Mod.Log.Info?.Write($" Parent position is: {parent.GameRep.transform.position}  rotation: {parent.GameRep.transform.rotation.eulerAngles}");
 
-                turret.Init(attachTransform.position, attachTransform.rotation.eulerAngles.z, true);
+                Vector3 spawnPosition = attachTransform.position;
+                Vector3 relativePosition = attachTransform.position - parent.CurrentPosition;
+                ICustomMech custMech = parent as ICustomMech;
+                if (custMech != null) {
+                  if (parent.IsTeleportedOffScreen) {
+                    Mod.Log.Info?.Write($" parent is offscreen. Need to spawn offscreen too");
+                    spawnPosition = SharedState.Combat.LocalPlayerTeam.OffScreenPosition;
+                  }
+                }
+                turret.Init(spawnPosition, attachTransform.rotation.eulerAngles.z, true);
                 turret.InitGameRep(null);
+                if(custMech != null) { custMech.AddLinkedActor(turret, relativePosition, false); }
                 Mod.Log.Info?.Write($" Turret start position: {turret.GameRep.transform.position}  rotation: {turret.GameRep.transform.rotation.eulerAngles}");
 
                 // Align the turrets to the orientation of the parent transform. This allows us to customize where the turrets will be.

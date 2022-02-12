@@ -117,13 +117,14 @@ namespace MonsterMashup.Helper
                 mech.CurrentRotation = mech.GameRep.transform.rotation;
                 Mod.Log.Info?.Write($" -- rotated position: {mech.GameRep.transform.position}  rotation: {mech.GameRep.transform.rotation.eulerAngles}");
 
-                mech.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, mech, BehaviorTreeIDEnum.CoreAITree);
-                Mod.Log.Debug?.Write("Updated behaviorTree");
-
                 Mod.Log.Info?.Write($" Spawned mech, adding to team.");
                 parent.team.AddUnit(mech);
                 mech.AddToTeam(parent.team);
                 mech.AddToLance(lance);
+
+                // Mission Control has a patch that expects a team to be present before this call is made. So it must be performed *after* the addTeam/addLance calls
+                mech.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, mech, BehaviorTreeIDEnum.CoreAITree);
+                Mod.Log.Debug?.Write("Updated behaviorTree");
 
                 // Notify everything else that the turret is active
                 UnitSpawnedMessage message = new UnitSpawnedMessage("MONSTER_MASH", mech.GUID);
@@ -192,13 +193,14 @@ namespace MonsterMashup.Helper
                 turret.CurrentRotation = turret.GameRep.transform.rotation;
                 Mod.Log.Info?.Write($" Turret rotated position: {turret.GameRep.transform.position}  rotation: {turret.GameRep.transform.rotation.eulerAngles}");
 
-                turret.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, turret, BehaviorTreeIDEnum.CoreAITree);
-                Mod.Log.Debug?.Write("Updated turret behaviorTree");
-
                 Mod.Log.Info?.Write($" Spawned turret, adding to team.");
                 parent.team.AddUnit(turret);
                 turret.AddToTeam(parent.team);
                 turret.AddToLance(lance);
+
+                // Mission Control has a patch that expects a team to be present before this call is made. So it must be performed *after* the addTeam/addLance calls
+                turret.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, turret, BehaviorTreeIDEnum.CoreAITree);
+                Mod.Log.Debug?.Write("Updated turret behaviorTree");
 
                 // Notify everything else that the turret is active
                 UnitSpawnedMessage message = new UnitSpawnedMessage("MONSTER_MASH", turret.GUID);

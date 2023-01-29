@@ -33,8 +33,7 @@ namespace MonsterMashup.Patch
     [HarmonyPatch(typeof(Mech), "DEBUG_DamageLocation")]
     static class Mech_DEBUG_DamageLocation
     { 
-        static void Postfix(Mech __instance, 
-            ArmorLocation aLoc, float totalDamage, AbstractActor attacker, DamageType damageType, string attackerGUID)
+        static void Postfix(Mech __instance, ArmorLocation aLoc)
         {
             Mod.Log.Info?.Write("Mech:DEBUG_DamageLocation INVOKED");
 
@@ -46,5 +45,7 @@ namespace MonsterMashup.Patch
             }
         }
     }
+
+
 
 }

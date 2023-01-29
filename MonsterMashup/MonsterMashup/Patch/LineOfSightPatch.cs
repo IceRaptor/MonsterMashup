@@ -11,8 +11,7 @@ namespace MonsterMashup.Patch
     [HarmonyPatch(new Type[] { typeof(AbstractActor), typeof(Vector3), typeof(ICombatant), typeof(Vector3), typeof(Quaternion) })]
     static class LineOfSight_GetVisibilityToTargetWithPositionsAndRotations
     {
-        static bool Prefix(LineOfSight __instance, ref VisibilityLevel __result,
-            AbstractActor source, Vector3 sourcePosition, ICombatant target, Vector3 targetPosition, Quaternion targetRotation)
+        static bool Prefix(LineOfSight __instance, ref VisibilityLevel __result, ICombatant target)
         {
             if (__instance == null || target == null) return true;
             

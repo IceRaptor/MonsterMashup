@@ -2,6 +2,7 @@
 using Harmony;
 using IRBTModUtils;
 using IRBTModUtils.Extension;
+using MonsterMashup.Helper;
 using MonsterMashup.UI;
 using System;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace MonsterMashup.Patch
     {
         static bool Prepare() => Mod.Config.LinkChildInitiative;
 
-        static void Postfix(AbstractActor __instance, ref int __result, StatCollection ___statCollection)
+        static void Postfix(AbstractActor __instance, ref int __result)
         {
             Mod.Log.Info?.Write("AA:BaseInitiative:Getter - entered.");
 
@@ -59,5 +60,18 @@ namespace MonsterMashup.Patch
             }
         }
     }
-  
+
+    [HarmonyPatch(typeof(AbstractActor), "FlagForDeath")]
+    static class AbstractActor_FlagForDeath
+    {
+        static void Postfix(AbstractActor __instance)
+        {
+            if (__instance is Mech mech)
+            {
+                Mod.Log.Info?.Write("Mech:FlagForDeath INVOKED");
+                LinkedEntityHelper.DestroyLinksInLocation(mech, ChassisLocations.All);
+            }            
+        }
+    }
+
 }

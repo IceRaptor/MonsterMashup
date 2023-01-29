@@ -38,12 +38,21 @@ namespace MonsterMashup.Helper
             {
                 Mod.Log.Debug?.Write($"MechComponent: {component.UIName} has linked turret, looking up actor by uid: {turretUID}");
                 AbstractActor turretActor = SharedState.Combat.FindActorByGUID(turretUID);
+
                 if (turretActor != null)
                 {
-                    turretActor.GetPilot()?.KillPilot(SharedState.Combat.Constants, "", 0, DamageType.ComponentExplosion, null, null);
-                    turretActor.FlagForDeath("Linked Component Destroyed", DeathMethod.ComponentExplosion, DamageType.ComponentExplosion, -1, -1, "", isSilent: false);
-                    turretActor.HandleDeath("0");
-                    Mod.Log.Info?.Write($"Turret: {turretActor.DistinctId()} successfully destroyed");
+
+                    if (turretActor.IsDead || turretActor.IsFlaggedForDeath)
+                    {
+                        Mod.Log.Info?.Write($"Turret: {turretActor.DistinctId()} already marked for death, skipping");
+                    }
+                    else
+                    {
+                        turretActor.GetPilot()?.KillPilot(SharedState.Combat.Constants, "", 0, DamageType.ComponentExplosion, null, null);
+                        turretActor.FlagForDeath("Linked Component Destroyed", DeathMethod.ComponentExplosion, DamageType.ComponentExplosion, -1, -1, "", isSilent: false);
+                        turretActor.HandleDeath("0");
+                        Mod.Log.Info?.Write($"Turret: {turretActor.DistinctId()} successfully destroyed");
+                    }
                 }
                 else
                 {

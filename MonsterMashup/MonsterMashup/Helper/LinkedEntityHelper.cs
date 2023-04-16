@@ -1,13 +1,9 @@
-﻿using BattleTech;
-using CustomComponents;
+﻿using CustomComponents;
 using IRBTModUtils;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MonsterMashup.Helper
 {

@@ -1,9 +1,4 @@
-﻿using BattleTech;
-using Harmony;
-using IRBTModUtils;
-using IRBTModUtils.Extension;
-using MonsterMashup.UI;
-using System;
+﻿using IRBTModUtils.Extension;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,7 +17,7 @@ namespace MonsterMashup.Patch
             {
                 Mod.Log.Info?.Write($" ---- TargetActor: {targetActor.DistinctId()} has radius: {targetActor.Radius}");
             }
-            
+
 
         }
     }

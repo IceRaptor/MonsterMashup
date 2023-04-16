@@ -1,18 +1,11 @@
-﻿
-using BattleTech;
-using BattleTech.UI;
-using IRBTModUtils;
-using IRBTModUtils.Extension;
-using MonsterMashup.Component;
+﻿using MonsterMashup.Component;
 using MonsterMashup.UI;
-using System;
 using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine;
 
 namespace MonsterMashup
 {
-    public static class ModState {
+    public static class ModState
+    {
 
         // -- Teams we can use for spawning OpFors
         internal static Team TargetTeam = null;
@@ -25,7 +18,8 @@ namespace MonsterMashup
 
         internal static Dictionary<string, AbstractActor> LinkedActors = new Dictionary<string, AbstractActor>();
 
-        internal static void Reset() {
+        internal static void Reset()
+        {
             TargetTeam = null;
             TargetAllyTeam = null;
             HostileToAllTeam = null;

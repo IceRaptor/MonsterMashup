@@ -1,14 +1,7 @@
-﻿using BattleTech;
-using CustomComponents;
-using Harmony;
+﻿using CustomComponents;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
 using MonsterMashup.Helper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MonsterMashup.Patch
 {
@@ -19,7 +12,7 @@ namespace MonsterMashup.Patch
         {
             Mod.Log.Debug?.Write("MechComponent:DamageComponent - INVOKED");
 
-            if (__instance == null || __instance.mechComponentRef == null || 
+            if (__instance == null || __instance.mechComponentRef == null ||
                 damageLevel != ComponentDamageLevel.Destroyed) return; // nothing to do
 
             if (__instance.mechComponentRef.Is<LinkedTurretComponent>())

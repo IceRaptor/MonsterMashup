@@ -1,13 +1,9 @@
-﻿using BattleTech;
-using BattleTech.Rendering.UI;
+﻿using BattleTech.Rendering.UI;
 using BattleTech.UI;
 using IRBTModUtils;
 using IRBTModUtils.Extension;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -37,7 +33,7 @@ namespace MonsterMashup.UI
             TopLevelGO.SetActive(false);
             TopLevelGO.transform.position = actor.CurrentPosition;
 
-            int hexRadius = (int) Math.Ceiling(actor.Radius / ModConsts.MetersPerHex);
+            int hexRadius = (int)Math.Ceiling(actor.Radius / ModConsts.MetersPerHex);
             Mod.Log.Info?.Write($" -- hexRadius: {hexRadius}");
             adjacentHexes = SharedState.Combat.HexGrid.GetGridPointsAroundPointWithinRadius(actor.CurrentPosition, hexRadius);
         }

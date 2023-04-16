@@ -4,7 +4,7 @@ namespace MonsterMashup
 {
     public class ModText
     {
-       
+
 
         public Dictionary<string, string> Labels = new Dictionary<string, string>
         {
@@ -15,7 +15,7 @@ namespace MonsterMashup
         //   populate default values in dictionaries through this call instead
         public void InitUnsetValues()
         {
-           
+
         }
     }
 }

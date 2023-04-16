@@ -1,6 +1,4 @@
-﻿using BattleTech;
-using Harmony;
-using IRBTModUtils;
+﻿using IRBTModUtils;
 using IRBTModUtils.Extension;
 using System;
 using UnityEngine;
@@ -11,10 +9,12 @@ namespace MonsterMashup.Patch
     [HarmonyPatch(new Type[] { typeof(AbstractActor), typeof(Vector3), typeof(ICombatant), typeof(Vector3), typeof(Quaternion) })]
     static class LineOfSight_GetVisibilityToTargetWithPositionsAndRotations
     {
-        static bool Prefix(LineOfSight __instance, ref VisibilityLevel __result, ICombatant target)
+        static void Prefix(ref bool __runOriginal, LineOfSight __instance, ref VisibilityLevel __result, ICombatant target)
         {
-            if (__instance == null || target == null) return true;
-            
+            if (!__runOriginal) return;
+
+            if (__instance == null || target == null) return;
+
             string parentUID = target.StatCollection.GetValue<string>(ModStats.Linked_Parent_Actor_UID);
             if (!string.IsNullOrEmpty(parentUID))
             {
@@ -24,11 +24,10 @@ namespace MonsterMashup.Patch
                 {
                     Mod.Log.Debug?.Write($"  --parent is not visible, skipping.");
                     __result = VisibilityLevel.None;
-                    return false;
+                    __runOriginal = false;
                 }
             }
 
-            return true;
         }
     }
 

@@ -1,12 +1,9 @@
-﻿using BattleTech;
-using BattleTech.Data;
+﻿using BattleTech.Data;
 using CustomComponents;
-using IRBTModUtils;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace MonsterMashup.Helper
 {
@@ -39,11 +36,11 @@ namespace MonsterMashup.Helper
                     {
                         Mod.Log.Info?.Write($" ---- linked actor at location: {component.mechComponentRef.MountedLocation}  " +
                             $"attachPoint: {linkedTurret.AttachPoint}  vehicle: {linkedTurret.CUVehicleDefId}  turret: {linkedTurret.TurretDefId}  pilotDefId: {linkedTurret.PilotDefId}");
-                        
+
                         if (!String.IsNullOrEmpty(linkedTurret.CUVehicleDefId))
                             vehiclesToLoad.Add(linkedTurret.CUVehicleDefId);
-                        
-                        if (!String.IsNullOrEmpty(linkedTurret.TurretDefId)) 
+
+                        if (!String.IsNullOrEmpty(linkedTurret.TurretDefId))
                             turretsToLoad.Add(linkedTurret.TurretDefId);
 
                         pilotsToLoad.Add(linkedTurret.PilotDefId);

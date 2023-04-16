@@ -1,6 +1,4 @@
-﻿using BattleTech;
-using Harmony;
-using HBS.Collections;
+﻿using HBS.Collections;
 using IRBTModUtils.Extension;
 using MonsterMashup.UI;
 using UnityEngine;
@@ -12,7 +10,7 @@ namespace MonsterMashup.Patch
     [HarmonyAfter("io.mission.customunits")]
     static class UnitSpawnPointGameLogic_SpawnMech
     {
-        static void Postfix(UnitSpawnPointGameLogic __instance, Mech __result, 
+        static void Postfix(UnitSpawnPointGameLogic __instance, Mech __result,
             MechDef mDef, PilotDef pilot, Team team, Lance lance, HeraldryDef customHeraldryDef)
         {
             Mod.Log.Info?.Write($"USPGL:SpawnMech INVOKED");
@@ -29,7 +27,7 @@ namespace MonsterMashup.Patch
 
                     Quaternion zeroRot = Quaternion.Euler(0f, 0f, 0f);
                     __result.GameRep.transform.rotation = Quaternion.RotateTowards(__result.GameRep.transform.rotation, zeroRot, 180f);
-                    
+
                     // Find and update j_root as well; this will prevent the unit from 'falling over'
                     Transform[] childTransforms = __result.GameRep.GetComponentsInChildren<Transform>();
                     foreach (Transform childT in childTransforms)

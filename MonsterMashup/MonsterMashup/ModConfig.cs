@@ -1,10 +1,4 @@
-﻿using BattleTech;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MonsterMashup
+﻿namespace MonsterMashup
 {
 
     public class ModConfig
@@ -44,5 +38,5 @@ namespace MonsterMashup
         }
     }
 
-   
+
 }

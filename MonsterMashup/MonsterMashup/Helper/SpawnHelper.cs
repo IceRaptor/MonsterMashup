@@ -1,5 +1,4 @@
-﻿using BattleTech;
-using IRBTModUtils;
+﻿using IRBTModUtils;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
 using System;
@@ -49,7 +48,7 @@ namespace MonsterMashup.Helper
 
 
                     Mod.Log.Info?.Write($" -- Found attach point: {linkedTurret.AttachPoint}");
-                    
+
                     // Spawned turrets get a new LanceId. This should prevent them messing with the parent's objectives.
                     if (!lanceDefsByParent.TryGetValue(parent.DistinctId(), out Lance linkedLance))
                     {
@@ -151,7 +150,7 @@ namespace MonsterMashup.Helper
             }
         }
 
-        internal static void SpawnLinkedTurret(AbstractActor parent, Lance lance, MechComponent sourceComponent, 
+        internal static void SpawnLinkedTurret(AbstractActor parent, Lance lance, MechComponent sourceComponent,
             LinkedTurretComponent linkedTurret, Transform attachTransform)
         {
             PilotDef pilotDef = SharedState.Combat.DataManager.PilotDefs.Get(linkedTurret.PilotDefId);
@@ -175,15 +174,17 @@ namespace MonsterMashup.Helper
                 Vector3 spawnPosition = attachTransform.position;
                 Vector3 relativePosition = attachTransform.position - parent.CurrentPosition;
                 ICustomMech custMech = parent as ICustomMech;
-                if (custMech != null) {
-                  if (parent.IsTeleportedOffScreen) {
-                    Mod.Log.Info?.Write($" parent is offscreen. Need to spawn offscreen too");
-                    spawnPosition = SharedState.Combat.LocalPlayerTeam.OffScreenPosition;
-                  }
+                if (custMech != null)
+                {
+                    if (parent.IsTeleportedOffScreen)
+                    {
+                        Mod.Log.Info?.Write($" parent is offscreen. Need to spawn offscreen too");
+                        spawnPosition = SharedState.Combat.LocalPlayerTeam.OffScreenPosition;
+                    }
                 }
                 turret.Init(spawnPosition, attachTransform.rotation.eulerAngles.z, true);
                 turret.InitGameRep(null);
-                if(custMech != null) { custMech.AddLinkedActor(turret, relativePosition, false); }
+                if (custMech != null) { custMech.AddLinkedActor(turret, relativePosition, false); }
                 Mod.Log.Info?.Write($" Turret start position: {turret.GameRep.transform.position}  rotation: {turret.GameRep.transform.rotation.eulerAngles}");
 
                 // Align the turrets to the orientation of the parent transform. This allows us to customize where the turrets will be.

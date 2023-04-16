@@ -1,13 +1,7 @@
-﻿using BattleTech;
-using Harmony;
-using IRBTModUtils;
+﻿using IRBTModUtils;
 using MonsterMashup.Helper;
 using MonsterMashup.UI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MonsterMashup.Patch
 {

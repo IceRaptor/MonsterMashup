@@ -1,17 +1,12 @@
-﻿using BattleTech;
-using Harmony;
-using IRBTModUtils;
+﻿using IRBTModUtils;
 using IRBTModUtils.Extension;
 using MonsterMashup.Helper;
 using MonsterMashup.UI;
-using System;
-using UnityEngine;
 
 namespace MonsterMashup.Patch
 {
 
-    [HarmonyPatch(typeof(AbstractActor))]
-    [HarmonyPatch("BaseInitiative", MethodType.Getter)]
+    [HarmonyPatch(typeof(AbstractActor), "BaseInitiative", MethodType.Getter)]
     static class AbstractActor_BaseInitiative
     {
         static bool Prepare() => Mod.Config.LinkChildInitiative;
@@ -70,7 +65,7 @@ namespace MonsterMashup.Patch
             {
                 Mod.Log.Info?.Write("Mech:FlagForDeath INVOKED");
                 LinkedEntityHelper.DestroyLinksInLocation(mech, ChassisLocations.All);
-            }            
+            }
         }
     }
 

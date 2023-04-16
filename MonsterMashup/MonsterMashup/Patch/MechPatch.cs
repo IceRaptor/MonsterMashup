@@ -1,16 +1,5 @@
-﻿using BattleTech;
-using CustomComponents;
-using Harmony;
-using IRBTModUtils;
-using IRBTModUtils.Extension;
-using MonsterMashup.Component;
+﻿using IRBTModUtils.Extension;
 using MonsterMashup.Helper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MonsterMashup.Patch
 {
@@ -32,7 +21,7 @@ namespace MonsterMashup.Patch
 
     [HarmonyPatch(typeof(Mech), "DEBUG_DamageLocation")]
     static class Mech_DEBUG_DamageLocation
-    { 
+    {
         static void Postfix(Mech __instance, ArmorLocation aLoc)
         {
             Mod.Log.Info?.Write("Mech:DEBUG_DamageLocation INVOKED");

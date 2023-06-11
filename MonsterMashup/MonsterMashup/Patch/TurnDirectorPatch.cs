@@ -31,7 +31,7 @@ namespace MonsterMashup.Patch
             }
             catch (Exception e)
             {
-                Mod.Log.Error?.Write(e, "Failed to load ambush resources due to exception!");
+                Mod.Log.Error?.Write(e, "Failed to load linked resources due to exception!");
             }
         }
     }

@@ -37,13 +37,13 @@ namespace MonsterMashup.Patch
                             childT.rotation = zeroRot;
                         }
                     }
+                }
 
-                    // Create a new footprint visualization for the unit, to show what ground it covers
-                    if (Mod.Config.DeveloperOptions.EnableFootprintVis)
-                    {
-                        FootprintVisualization footprintVis = new FootprintVisualization(__result);
-                        ModState.FootprintVisuals.Add(__result.DistinctId(), footprintVis);
-                    }
+                // Create a new footprint visualization for the unit, to show what ground it covers
+                if (Mod.Config.DeveloperOptions.EnableFootprintVis)
+                {
+                    FootprintVisualization footprintVis = new FootprintVisualization(__result);
+                    ModState.FootprintVisuals.Add(__result.DistinctId(), footprintVis);
                 }
             }
         }

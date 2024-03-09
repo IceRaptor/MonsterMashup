@@ -1,9 +1,12 @@
-﻿using IRBTModUtils;
+﻿using BattleTech;
+using CustomUnits;
+using IRBTModUtils;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Localize.Text;
 
 namespace MonsterMashup.Helper
 {
@@ -15,6 +18,7 @@ namespace MonsterMashup.Helper
             {
                 Dictionary<string, Lance> lanceDefsByParent = new Dictionary<string, Lance>();
                 Mod.Log.Info?.Write($"Iterating {ModState.ComponentsToLink.Count} components to link actors");
+                List<AbstractActor> parents = new List<AbstractActor>();
                 foreach ((MechComponent sourceComponent, LinkedTurretComponent linkedTurret) in ModState.ComponentsToLink)
                 {
                     AbstractActor parent = sourceComponent.parent;
@@ -61,6 +65,8 @@ namespace MonsterMashup.Helper
                         SpawnLinkedTurret(parent, linkedLance, sourceComponent, linkedTurret, attachTransform);
                     else if (linkedTurret.IsCUVehicle())
                         SpawnLinkedCUVehicle(parent, linkedLance, sourceComponent, linkedTurret, attachTransform);
+
+                    parents.Add(parent);
                 }
             }
             catch (Exception e)
@@ -95,8 +101,8 @@ namespace MonsterMashup.Helper
                 if (mechDef == null || pilotDef == null) Mod.Log.Error?.Write($"Failed to LOAD VehicleDefId: {linkedTurret.CUVehicleDefId} + pilotDefId: {linkedTurret.PilotDefId} !");
 
                 //Turret turret = ActorFactory.CreateTurret(turretDef, pilotDef, parent.EncounterTags, SharedState.Combat, parent.team.GetNextSupportUnitGuid(), "", null);
-                Mech mech = ActorFactory.CreateMech(mechDef, pilotDef, new HBS.Collections.TagSet(), SharedState.Combat, parent.team.GetNextSupportUnitGuid(), "", null);
-                if (mech == null)
+                Mech fakeVehicle = ActorFactory.CreateMech(mechDef, pilotDef, new HBS.Collections.TagSet(), SharedState.Combat, parent.team.GetNextSupportUnitGuid(), "", null);
+                if (fakeVehicle == null)
                 {
                     Mod.Log.Warn?.Write($"Failed to CREATE vehicleDef: {linkedTurret.CUVehicleDefId} + pilotDefId: {linkedTurret.PilotDefId} !");
                     return;
@@ -105,41 +111,61 @@ namespace MonsterMashup.Helper
                 Mod.Log.Info?.Write($" Attach point is: {attachTransform.position}  rotation: {attachTransform.rotation.eulerAngles}");
                 Mod.Log.Info?.Write($" Parent position is: {parent.GameRep.transform.position}  rotation: {parent.GameRep.transform.rotation.eulerAngles}");
 
-                mech.Init(attachTransform.position, attachTransform.rotation.eulerAngles.z, true);
-                mech.InitGameRep(null);
-                Mod.Log.Info?.Write($" -- start position: {mech.GameRep.transform.position}  rotation: {mech.GameRep.transform.rotation.eulerAngles}");
+                fakeVehicle.Init(attachTransform.position, attachTransform.rotation.eulerAngles.z, true);
+                fakeVehicle.InitGameRep(null);
+                Mod.Log.Info?.Write($" -- start position: {fakeVehicle.GameRep.transform.position}  rotation: {fakeVehicle.GameRep.transform.rotation.eulerAngles}");
 
                 // Align the turrets to the orientation of the parent transform. This allows us to customize where the turrets will be.
                 // We need to align both the visuals (gameRep) and object. The former for display, the latter for LoS calculations
                 Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
-                mech.GameRep.transform.rotation = Quaternion.RotateTowards(mech.GameRep.transform.rotation, alignVector, 9999f);
-                mech.CurrentRotation = mech.GameRep.transform.rotation;
-                Mod.Log.Info?.Write($" -- rotated position: {mech.GameRep.transform.position}  rotation: {mech.GameRep.transform.rotation.eulerAngles}");
+                fakeVehicle.GameRep.transform.rotation = Quaternion.RotateTowards(fakeVehicle.GameRep.transform.rotation, alignVector, 9999f);
+                fakeVehicle.CurrentRotation = fakeVehicle.GameRep.transform.rotation;
+                Mod.Log.Info?.Write($" -- rotated position: {fakeVehicle.GameRep.transform.position}  rotation: {fakeVehicle.GameRep.transform.rotation.eulerAngles}");
 
                 Mod.Log.Info?.Write($" Spawned mech, adding to team.");
-                parent.team.AddUnit(mech);
-                mech.AddToTeam(parent.team);
-                mech.AddToLance(lance);
+                parent.team.AddUnit(fakeVehicle);
+                fakeVehicle.AddToTeam(parent.team);
+                fakeVehicle.AddToLance(lance);
 
                 // Mission Control has a patch that expects a team to be present before this call is made. So it must be performed *after* the addTeam/addLance calls
-                mech.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, mech, BehaviorTreeIDEnum.CoreAITree);
+                fakeVehicle.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, fakeVehicle, BehaviorTreeIDEnum.CoreAITree);
                 Mod.Log.Debug?.Write("Updated behaviorTree");
 
                 // Notify everything else that the turret is active
-                UnitSpawnedMessage message = new UnitSpawnedMessage("MONSTER_MASH", mech.GUID);
+                UnitSpawnedMessage message = new UnitSpawnedMessage("MONSTER_MASH", fakeVehicle.GUID);
                 SharedState.Combat.MessageCenter.PublishMessage(message);
 
                 // Force the turret to be hidden from the player
-                mech.OnPlayerVisibilityChanged(VisibilityLevel.None);
+                fakeVehicle.OnPlayerVisibilityChanged(VisibilityLevel.None);
+
+                // Link units via CU
+                ICustomMech custMech = parent as ICustomMech;
+                if (custMech != null)
+                {
+                    Vector3 spawnPosition = attachTransform.position;
+                    Vector3 relativePosition = attachTransform.position - parent.CurrentPosition;
+                    Mod.Log.Info?.Write($"Parent currPos: {parent.CurrentPosition} attachPos: {attachTransform.position}  delta: {relativePosition}");
+
+                    Mod.Log.Info?.Write($"CU Linking fakeVehicle: {fakeVehicle.DistinctId()} to parent: {parent.DistinctId()}");
+                    custMech.AddLinkedActor(fakeVehicle, relativePosition, false);
+
+                    if (parent.IsTeleportedOffScreen)
+                    {
+                        Mod.Log.Info?.Write($" parent is offscreen. Need to spawn offscreen too");
+                        spawnPosition = SharedState.Combat.LocalPlayerTeam.OffScreenPosition;
+                    }
+                }
 
                 // Write linking stats for component and turret
-                Mod.Log.Info?.Write($" Bi-directionally linking mech: {mech.uid} to component: {sourceComponent.parent.uid}:{sourceComponent.uid}");
-                sourceComponent.StatCollection.AddStatistic<string>(ModStats.Linked_Child_UID, mech.uid, null);
-                mech.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_Actor_UID, sourceComponent.parent.uid, null);
-                mech.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_MechComp_UID, sourceComponent.uid, null);
+                Mod.Log.Info?.Write($" Bi-directionally linking mech: {fakeVehicle.uid} to component: {sourceComponent.parent.uid}:{sourceComponent.uid}");
+                sourceComponent.StatCollection.AddStatistic<string>(ModStats.Linked_Child_UID, fakeVehicle.uid, null);
+                fakeVehicle.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_Actor_UID, sourceComponent.parent.uid, null);
+                fakeVehicle.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_MechComp_UID, sourceComponent.uid, null);
 
                 // Populate the modstate
-                ModState.LinkedActors.Add(mech.DistinctId(), parent);
+                ModState.Parents.Add(parent);
+                ModState.LinkedActors.Add(fakeVehicle.DistinctId(), parent);
+                ModState.AttachTransforms.Add(fakeVehicle.DistinctId(), attachTransform);
 
                 Mod.Log.Info?.Write($"Spawned vehicleDefId: {linkedTurret.CUVehicleDefId} + pilotDefId: {linkedTurret.PilotDefId} at attach: {attachTransform.position}");
             }
@@ -172,19 +198,8 @@ namespace MonsterMashup.Helper
                 Mod.Log.Info?.Write($" Parent position is: {parent.GameRep.transform.position}  rotation: {parent.GameRep.transform.rotation.eulerAngles}");
 
                 Vector3 spawnPosition = attachTransform.position;
-                Vector3 relativePosition = attachTransform.position - parent.CurrentPosition;
-                ICustomMech custMech = parent as ICustomMech;
-                if (custMech != null)
-                {
-                    if (parent.IsTeleportedOffScreen)
-                    {
-                        Mod.Log.Info?.Write($" parent is offscreen. Need to spawn offscreen too");
-                        spawnPosition = SharedState.Combat.LocalPlayerTeam.OffScreenPosition;
-                    }
-                }
                 turret.Init(spawnPosition, attachTransform.rotation.eulerAngles.z, true);
                 turret.InitGameRep(null);
-                if (custMech != null) { custMech.AddLinkedActor(turret, relativePosition, false); }
                 Mod.Log.Info?.Write($" Turret start position: {turret.GameRep.transform.position}  rotation: {turret.GameRep.transform.rotation.eulerAngles}");
 
                 // Align the turrets to the orientation of the parent transform. This allows us to customize where the turrets will be.
@@ -210,6 +225,22 @@ namespace MonsterMashup.Helper
                 // Force the turret to be hidden from the player
                 turret.OnPlayerVisibilityChanged(VisibilityLevel.None);
 
+                // Link turrents with CU
+                ICustomMech custMech = parent as ICustomMech;
+                if (custMech != null)
+                {
+                    Vector3 relativePosition = attachTransform.position - parent.CurrentPosition;
+
+                    Mod.Log.Info?.Write($"CU Linking turret {turret.DistinctId()} to parent: {parent.DistinctId()}");
+                    custMech.AddLinkedActor(turret, relativePosition, false);
+
+                    if (parent.IsTeleportedOffScreen)
+                    {
+                        Mod.Log.Info?.Write($" parent is offscreen. Need to spawn offscreen too");
+                        spawnPosition = SharedState.Combat.LocalPlayerTeam.OffScreenPosition;
+                    }
+                }
+
                 // Write linking stats for component and turret
                 Mod.Log.Info?.Write($" Bi-directionally linking turret: {turret.uid} to component: {sourceComponent.parent.uid}:{sourceComponent.uid}");
                 sourceComponent.StatCollection.AddStatistic<string>(ModStats.Linked_Child_UID, turret.uid, null);
@@ -217,9 +248,11 @@ namespace MonsterMashup.Helper
                 turret.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_MechComp_UID, sourceComponent.uid, null);
 
                 // Populate the modstate
+                ModState.Parents.Add(parent);
                 ModState.LinkedActors.Add(turret.DistinctId(), parent);
+                ModState.AttachTransforms.Add(turret.DistinctId(), attachTransform);
 
-                Mod.Log.Info?.Write($"Spawned turretDefId: {linkedTurret.TurretDefId} + pilotDefId: {linkedTurret.PilotDefId} at attach: {attachTransform.position}");
+                Mod.Log.Info?.Write($"Spawned turretDefId: {linkedTurret.TurretDefId} + pilotDefId: {linkedTurret.PilotDefId} at attach: {attachTransform.position} on parent: {parent.DistinctId()}");
             }
             catch (Exception e)
             {

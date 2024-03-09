@@ -1,6 +1,7 @@
 ﻿using MonsterMashup.Component;
 using MonsterMashup.UI;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MonsterMashup
 {
@@ -17,6 +18,9 @@ namespace MonsterMashup
         internal static Dictionary<string, FootprintVisualization> FootprintVisuals = new Dictionary<string, FootprintVisualization>();
 
         internal static Dictionary<string, AbstractActor> LinkedActors = new Dictionary<string, AbstractActor>();
+        internal static Dictionary<string, Transform> AttachTransforms = new Dictionary<string, Transform>();
+
+        internal static HashSet<AbstractActor> Parents = new HashSet<AbstractActor>();
 
         internal static void Reset()
         {
@@ -33,6 +37,8 @@ namespace MonsterMashup
             FootprintVisuals.Clear();
 
             LinkedActors.Clear();
+            AttachTransforms.Clear();
+            Parents.Clear();
         }
     }
 

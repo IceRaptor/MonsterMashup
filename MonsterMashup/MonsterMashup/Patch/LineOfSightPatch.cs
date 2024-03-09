@@ -18,11 +18,11 @@ namespace MonsterMashup.Patch
             string parentUID = target.StatCollection.GetValue<string>(ModStats.Linked_Parent_Actor_UID);
             if (!string.IsNullOrEmpty(parentUID))
             {
-                Mod.Log.Debug?.Write($"Target: {target.DistinctId()} has linked parent: {parentUID}");
+                Mod.Log.Trace?.Write($"Target: {target.DistinctId()} has linked parent: {parentUID}");
                 AbstractActor parent = SharedState.Combat.FindActorByGUID(parentUID);
                 if (parent != null && parent.GameRep != null && !parent.GameRep.VisibleToPlayer)
                 {
-                    Mod.Log.Debug?.Write($"  --parent is not visible, skipping.");
+                    Mod.Log.Trace?.Write($"  --parent is not visible, skipping.");
                     __result = VisibilityLevel.None;
                     __runOriginal = false;
                 }

@@ -41,6 +41,10 @@
 			"Type": "ContractOverride", 
 			"Path": "contract_override" 
 		},
+		{
+		  "Type": "MovementCapabilitiesDef",
+		  "Path": "movedef"
+		}, 
 	],
     "Settings": {
         "Debug" : true,

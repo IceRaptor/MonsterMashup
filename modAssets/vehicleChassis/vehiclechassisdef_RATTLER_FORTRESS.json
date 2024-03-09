@@ -1,0 +1,166 @@
+{
+  "Description": {
+    "Id": "vehiclechassisdef_RATTLER_FORTRESS",
+    "Name": "Rattler Fortress",
+    "Details": "",
+    "Icon": "STRIKER",
+    "Cost": 564,
+    "Rarity": 0,
+    "Purchasable": false
+  },
+  "CustomParts": {
+    "AOEHeight": 0,
+    "FiringArc": 90,
+	"UnitTypeName" : "VEHICLE",
+    "FakeVehicle": true,
+	"TurretArmorReadout": true,
+    "Unaffected": {
+      "DesignMasks": "true",
+      "Pathing": "false",
+      "Fire": "true",
+      "Landmines": "true"
+    },
+    "NullifyBodyMesh": true,
+    "FakeVehicleCrewLocation": "Front",
+    "TieToGroundOnDeath": "true"	
+  },
+  "MovementCapDefID": "movedef_RATTLER",
+  "PathingCapDefID": "pathingdef_assault",
+  "HardpointDataDefID": "hardpointdatadef_curattler",
+  "PrefabIdentifier": "chrprfmech_rattler-fortress",
+  "PrefabBase": "curattler",
+  "Tonnage": 100,
+  "weightClass": "ASSAULT",
+  "BattleValue": 564,
+  "TopSpeed": 85,
+  "TurnRadius": 90,
+  "movementType": "Tracked",
+  "SpotterDistanceMultiplier": 1,
+  "VisibilityMultiplier": 1,
+  "SensorRangeMultiplier": 1,
+  "Signature": 1,
+  "Radius": 60,
+  "LOSSourcePositions": [
+  
+  
+  
+		{
+		    "x" : 0,
+		    "y" : 2.5,
+		    "z" : -0.5
+	    },
+		{
+		    "x" : 0,
+		    "y" : 1.5,
+		    "z" : 3
+	    }
+		
+  ],
+  "LOSTargetPositions": [
+  		{
+		    "x" : 0,
+		    "y" : 0,
+		    "z" : 42
+	    },
+		{
+		    "x" : 0,
+		    "y" : 38,
+		    "z" : 32
+	    },
+		{
+		    "x" : -18.4,
+		    "y" : 38,
+		    "z" : 63.2
+	    },
+		{
+		    "x" : 18.4,
+		    "y" : 38,
+		    "z" : 63.2
+	    },
+  
+  
+  
+		{
+		    "x" : 0,
+		    "y" : 2.5,
+		    "z" : -0.5
+	    },
+		{
+		    "x" : 0,
+		    "y" : 1.5,
+		    "z" : 3
+	    },
+		{
+		    "x" : -2,
+		    "y" : 2.5,
+		    "z" : 0
+	    },
+		{
+		    "x" : 2,
+		    "y" : 2.5,
+		    "z" : 0
+	    },
+		{
+		    "x" : 0,
+		    "y" : 1.5,
+		    "z" : -4.5
+	    }
+  ],
+  "Locations": [
+    {
+      "Location": "Front",
+      "Hardpoints": [
+        {
+          "WeaponMount": "Energy",
+          "Omni": false
+        }
+      ],
+      "Tonnage": 0,
+      "InventorySlots": 0,
+      "MaxArmor": 50,
+      "InternalStructure": 25
+    },
+    {
+      "Location": "Left",
+      "Hardpoints": [
+        {
+          "WeaponMount": "Energy",
+          "Omni": false
+        }
+      ],
+      "Tonnage": 0,
+      "InventorySlots": 0,
+      "MaxArmor": 50,
+      "InternalStructure": 25
+    },
+    {
+      "Location": "Right",
+      "Hardpoints": [
+        {
+          "WeaponMount": "Energy",
+          "Omni": false
+        }
+      ],
+      "Tonnage": 0,
+      "InventorySlots": 0,
+      "MaxArmor": 50,
+      "InternalStructure": 25
+    },
+    {
+      "Location": "Rear",
+      "Hardpoints": [],
+      "Tonnage": 0,
+      "InventorySlots": 0,
+      "MaxArmor": 50,
+      "InternalStructure": 25
+    },
+    {
+      "Location": "Turret",
+      "Hardpoints": [],
+      "Tonnage": 0,
+      "InventorySlots": 0,
+      "MaxArmor": 50,
+      "InternalStructure": 25
+    }
+  ]
+}

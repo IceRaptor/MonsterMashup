@@ -11,7 +11,7 @@ namespace MonsterMashup.Helper
     {
         public static void DestroyLinksInLocation(Mech mech, ChassisLocations location)
         {
-            Mod.Log.Info?.Write($"Scanning location: {location} on actor: {mech.DistinctId()} for linked turrets.");
+            Mod.Log.Info?.Write($"Scanning location: {location} on actor: {mech.DistinctId()} for linked actors.");
             List<MechComponent> components = mech.GetComponentsForLocation(location, ComponentType.Upgrade);
             foreach (MechComponent comp in components)
             {

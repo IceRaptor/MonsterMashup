@@ -23,7 +23,6 @@ namespace MonsterMashup.Helper
 
             // Filter requests so we don't load multiple times
             HashSet<string> vehiclesToLoad = new HashSet<string>();
-            HashSet<string> turretsToLoad = new HashSet<string>();
             HashSet<string> pilotsToLoad = new HashSet<string>();
             Mod.Log.Info?.Write($"== Checking all actors for linked turrets");
             foreach (AbstractActor actor in combat.AllActors)
@@ -35,13 +34,10 @@ namespace MonsterMashup.Helper
                     if (component.mechComponentRef.Is<LinkedTurretComponent>(out LinkedTurretComponent linkedTurret))
                     {
                         Mod.Log.Info?.Write($" ---- linked actor at location: {component.mechComponentRef.MountedLocation}  " +
-                            $"attachPoint: {linkedTurret.AttachPoint}  vehicle: {linkedTurret.CUVehicleDefId}  turret: {linkedTurret.TurretDefId}  pilotDefId: {linkedTurret.PilotDefId}");
+                            $"attachPoint: {linkedTurret.AttachPoint}  CU vehicle: {linkedTurret.CUVehicleDefId}  pilotDefId: {linkedTurret.PilotDefId}");
 
                         if (!String.IsNullOrEmpty(linkedTurret.CUVehicleDefId))
                             vehiclesToLoad.Add(linkedTurret.CUVehicleDefId);
-
-                        if (!String.IsNullOrEmpty(linkedTurret.TurretDefId))
-                            turretsToLoad.Add(linkedTurret.TurretDefId);
 
                         pilotsToLoad.Add(linkedTurret.PilotDefId);
 
@@ -51,19 +47,14 @@ namespace MonsterMashup.Helper
             }
             Mod.Log.Info?.Write($"== DONE");
 
-            if (turretsToLoad.Count == 0 && pilotsToLoad.Count == 0)
+            if (vehiclesToLoad.Count == 0 || pilotsToLoad.Count == 0)
                 return; // Nothing to do
 
             // Add the filtered requests to the async load
             foreach (string defId in vehiclesToLoad)
             {
-                Mod.Log.Info?.Write($"  - VehicleDefId: {defId}");
+                Mod.Log.Info?.Write($"  - CU VehicleDefId: {defId}");
                 asyncSpawnReq.AddBlindLoadRequest(BattleTechResourceType.VehicleDef, defId, new bool?(false));
-            }
-            foreach (string defId in turretsToLoad)
-            {
-                Mod.Log.Info?.Write($"  - TurretDefId: {defId}");
-                asyncSpawnReq.AddBlindLoadRequest(BattleTechResourceType.TurretDef, defId, new bool?(false));
             }
             foreach (string defId in pilotsToLoad)
             {
@@ -81,7 +72,7 @@ namespace MonsterMashup.Helper
             Mod.Log.Info?.Write($" -- Post-load counts => " +
                 $"weaponDefs: {combat.DataManager.WeaponDefs.Count}  " +
                 $"pilotDefs: {combat.DataManager.PilotDefs.Count}  mechDefs: {combat.DataManager.MechDefs.Count}  " +
-                $"turretDefs: {combat.DataManager.TurretDefs.Count}  vehicleDefs: {combat.DataManager.VehicleDefs.Count}");
+                $"CU vehicleDefs: {combat.DataManager.VehicleDefs.Count}");
 
             SpawnHelper.SpawnAllLinkedActors();
         }

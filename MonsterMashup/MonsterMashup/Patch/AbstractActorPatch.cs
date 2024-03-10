@@ -13,14 +13,14 @@ namespace MonsterMashup.Patch
 
         static void Postfix(AbstractActor __instance, ref int __result)
         {
-            Mod.Log.Info?.Write("AA:BaseInitiative:Getter - entered.");
+            Mod.Log.Debug?.Write($"AA:BaseInitiative:Getter - entered for actor: {__instance.DistinctId()}");
 
-            if (__instance == null || !(__instance is Turret turret)) return; // nothing to do
+            if (__instance == null) return; // nothing to do
 
             if (!__instance.Combat.TurnDirector.IsInterleaved)
                 return; // Nothing to do; non-combat turn
 
-            string parentID = turret.StatCollection.GetValue<string>(ModStats.Linked_Parent_Actor_UID);
+            string parentID = __instance.StatCollection.GetValue<string>(ModStats.Linked_Parent_Actor_UID);
             if (parentID == null)
                 return; // Nothing to do; not a linked turret
 

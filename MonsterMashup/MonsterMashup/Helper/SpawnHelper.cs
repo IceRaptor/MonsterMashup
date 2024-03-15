@@ -1,4 +1,5 @@
-﻿using IRBTModUtils;
+﻿using BattleTech;
+using IRBTModUtils;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
 using System;
@@ -16,7 +17,7 @@ namespace MonsterMashup.Helper
                 Dictionary<string, Lance> lanceDefsByParent = new Dictionary<string, Lance>();
                 Mod.Log.Info?.Write($"Iterating {ModState.ComponentsToLink.Count} components to link actors");
                 List<AbstractActor> parents = new List<AbstractActor>();
-                foreach ((MechComponent sourceComponent, LinkedTurretComponent linkedTurret) in ModState.ComponentsToLink)
+                foreach ((MechComponent sourceComponent, LinkedActorComponent linkedTurret) in ModState.ComponentsToLink)
                 {
                     AbstractActor parent = sourceComponent.parent;
                     Mod.Log.Info?.Write($" -- Spawning linkedActors for component: {sourceComponent.Description.UIName} on actor: {parent.DistinctId()}");
@@ -84,7 +85,7 @@ namespace MonsterMashup.Helper
 
         // Vehicles are mechs under the covers, so spawn mechs
         internal static void SpawnLinkedCUVehicle(AbstractActor parent, Lance lance, MechComponent sourceComponent,
-            LinkedTurretComponent linkedTurret, Transform attachTransform)
+            LinkedActorComponent linkedTurret, Transform attachTransform)
         {
             PilotDef pilotDef = SharedState.Combat.DataManager.PilotDefs.Get(linkedTurret.PilotDefId);
             MechDef mechDef = SharedState.Combat.DataManager.MechDefs.GetOrCreate(linkedTurret.CUVehicleDefId);
@@ -111,7 +112,8 @@ namespace MonsterMashup.Helper
 
                 // Align the turrets to the orientation of the parent transform. This allows us to customize where the turrets will be.
                 // We need to align both the visuals (gameRep) and object. The former for display, the latter for LoS calculations
-                Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
+                //Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
+                Quaternion alignVector = attachTransform.rotation;
                 fakeVehicle.GameRep.transform.rotation = Quaternion.RotateTowards(fakeVehicle.GameRep.transform.rotation, alignVector, 9999f);
                 fakeVehicle.CurrentRotation = fakeVehicle.GameRep.transform.rotation;
                 Mod.Log.Info?.Write($" -- rotated position: {fakeVehicle.GameRep.transform.position}  rotation: {fakeVehicle.GameRep.transform.rotation.eulerAngles}");
@@ -158,12 +160,7 @@ namespace MonsterMashup.Helper
                 fakeVehicle.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_Actor_UID, sourceComponent.parent.uid, null);
                 fakeVehicle.StatCollection.AddStatistic<string>(ModStats.Linked_Parent_MechComp_UID, sourceComponent.uid, null);
 
-                // TODO: Initialize weapons on spawned unit
-                // TODO: LINK WEAPONS FOR ARCS
-                foreach (Weapon weapon in fakeVehicle.Weapons)
-                {
-                    Mod.Log.Info?.Write($"  -- weapon: {weapon.UIName} location: {weapon.LocationDef}");
-                }
+                LinkedEntityHelper.ProcessWeapons(fakeVehicle);
 
                 // Populate the modstate
                 ModState.Parents.Add(parent);

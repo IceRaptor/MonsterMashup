@@ -15,7 +15,7 @@ namespace MonsterMashup.Patch
             if (__instance == null || __instance.mechComponentRef == null ||
                 damageLevel != ComponentDamageLevel.Destroyed) return; // nothing to do
 
-            if (__instance.mechComponentRef.Is<LinkedTurretComponent>())
+            if (__instance.mechComponentRef.Is<LinkedActorComponent>())
             {
                 Mod.Log.Info?.Write($"MechComponent: {__instance.parent.DistinctId()}:{__instance.uid} has been destroyed, killing linked turret.");
                 LinkedEntityHelper.KillLinkedTurret(__instance);

@@ -31,7 +31,7 @@ namespace MonsterMashup.Helper
                 foreach (MechComponent component in actor.allComponents)
                 {
                     Mod.Log.Debug?.Write($" --- Component: {component.UIName}");
-                    if (component.mechComponentRef.Is<LinkedTurretComponent>(out LinkedTurretComponent linkedTurret))
+                    if (component.mechComponentRef.Is<LinkedActorComponent>(out LinkedActorComponent linkedTurret))
                     {
                         Mod.Log.Info?.Write($" ---- linked actor at location: {component.mechComponentRef.MountedLocation}  " +
                             $"attachPoint: {linkedTurret.AttachPoint}  CU vehicle: {linkedTurret.CUVehicleDefId}  pilotDefId: {linkedTurret.PilotDefId}");

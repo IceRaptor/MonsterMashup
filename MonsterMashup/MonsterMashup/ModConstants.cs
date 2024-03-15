@@ -13,6 +13,8 @@ namespace MonsterMashup
         public const string Linked_Parent_MechComp_UID = "MMASH_Linked_Parent_MechComp_UID";
         public const string Linked_Child_UID = "MMASH_Linked_Child_GUID";
 
+        public const string Weapon_Restricted_Firing_Arc = "MMASH_RestrictedFiringArc";
+
         // HBS Values
         public const string HBS_HeatSinkCapacity = "HeatSinkCapacity";
     }

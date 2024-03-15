@@ -13,12 +13,13 @@ namespace MonsterMashup
         internal static Team TargetAllyTeam = null;
         internal static Team HostileToAllTeam = null;
 
-        internal static List<(MechComponent source, LinkedTurretComponent linkedTurret)> ComponentsToLink = new List<(MechComponent source, LinkedTurretComponent linkedTurret)>();
+        internal static List<(MechComponent source, LinkedActorComponent linkedTurret)> ComponentsToLink = new List<(MechComponent source, LinkedActorComponent linkedTurret)>();
 
         internal static Dictionary<string, FootprintVisualization> FootprintVisuals = new Dictionary<string, FootprintVisualization>();
 
         internal static Dictionary<string, AbstractActor> LinkedActors = new Dictionary<string, AbstractActor>();
         internal static Dictionary<string, Transform> AttachTransforms = new Dictionary<string, Transform>();
+        internal static Dictionary<Weapon, Transform> WeaponAttachTransforms = new Dictionary<Weapon, Transform>();
 
         internal static HashSet<AbstractActor> Parents = new HashSet<AbstractActor>();
 
@@ -38,6 +39,7 @@ namespace MonsterMashup
 
             LinkedActors.Clear();
             AttachTransforms.Clear();
+            WeaponAttachTransforms.Clear();
             Parents.Clear();
         }
     }

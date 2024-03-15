@@ -1,13 +1,11 @@
-﻿using IRBTModUtils.Extension;
+﻿using CustomComponents;
+using CustomUnits;
+using IRBTModUtils.Extension;
+using MonsterMashup.Component;
 using MonsterMashup.Helper;
-using static CustomUnits.CustomMech;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using HBS.Collections;
-using IRBTModUtils;
-using CustomUnits;
-using BattleTech;
-using CustomComponents;
 
 namespace MonsterMashup.Patch
 {
@@ -34,7 +32,7 @@ namespace MonsterMashup.Patch
     {
         static void Prefix(ref bool __runOriginal, Mech __instance, ref Vector3 position, ref Quaternion heading, int stackItemUID, bool updateDesignMask, List<DesignMaskDef> remainingMasks, bool skipLogging = false)
         {
-            Mod.Log.Info?.Write($"OnPositionUpdate for actor: {__instance.DistinctId()} => newPos: {position}  heading: {heading}");
+            Mod.Log.Trace?.Write($"OnPositionUpdate for actor: {__instance.DistinctId()} => newPos: {position}  heading: {heading}");
 
             // If we're an attached child, make sure we re-align to the parent's target transform and heading when we move.
             //   If we don't, the model will get it's new position from the actual move sequence and get out of alignment with the parnet
@@ -43,7 +41,7 @@ namespace MonsterMashup.Patch
             {
                 __instance.GameRep.transform.position = attachTransform.position;
 
-                Mod.Log.Info?.Write($"  aligning actor");
+                Mod.Log.Trace?.Write($"  aligning actor");
                 Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
                 Quaternion linkedRot = Quaternion.RotateTowards(__instance.GameRep.transform.rotation, alignVector, 9999f);
                 __instance.GameRep.transform.rotation = linkedRot;
@@ -52,6 +50,21 @@ namespace MonsterMashup.Patch
             }
 
             __runOriginal = true;
+        }
+    }
+
+    [HarmonyPatch(typeof(UnitSpawnPointGameLogic), "initializeActor")]
+    static class UnitSpawnPointGameLogic_initializeActor
+    {
+        static void Postfix(UnitSpawnPointGameLogic __instance, AbstractActor actor, Team team, Lance lance)
+        {
+            Mod.Log.Info?.Write($"UnitSpawnPointGameLogic::initializeActor for actor: {actor.DistinctId()}");
+
+            if (actor is Mech mech)
+            {
+                LinkedEntityHelper.ProcessWeapons(mech);
+            }
+
         }
     }
 

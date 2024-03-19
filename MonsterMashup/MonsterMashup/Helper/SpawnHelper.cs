@@ -55,7 +55,7 @@ namespace MonsterMashup.Helper
                     if (!lanceDefsByParent.TryGetValue(parent.DistinctId(), out Lance linkedLance))
                     {
                         Mod.Log.Info?.Write($"Lance not found for parent: {parent.DistinctId()}, creating new.");
-                        linkedLance = CreateLinkedLance(parent.team);
+                        linkedLance = CreateLinkedLance(parent.team, parent.lance);
                         lanceDefsByParent.Add(parent.DistinctId(), linkedLance);
                     }
 
@@ -70,15 +70,20 @@ namespace MonsterMashup.Helper
             }
         }
 
-        internal static Lance CreateLinkedLance(Team team)
+        internal static Lance CreateLinkedLance(Team parentTeam, Lance parentLance)
         {
-            Lance lance = new Lance(team, new BattleTech.Framework.LanceSpawnerRef[] { });
+            Lance lance = new Lance(parentTeam, new BattleTech.Framework.LanceSpawnerRef[] { });
             Guid g = Guid.NewGuid();
             string lanceGuid = LanceSpawnerGameLogic.GetLanceGuid(g.ToString());
             lance.lanceGuid = lanceGuid;
-            Mod.Log.Info?.Write($"Created new linked Lance: {lance.lanceGuid} for team: {team.DisplayName}");
+            Mod.Log.Info?.Write($"Created new linked Lance: {lance.lanceGuid} for team: {parentTeam.DisplayName}");
             SharedState.Combat.ItemRegistry.AddItem(lance);
-            team.lances.Add(lance);
+            parentTeam.lances.Add(lance);
+
+            if (parentLance.IsAlerted)
+            {
+                lance.BehaviorVariables.SetVariable(BehaviorVariableName.Bool_Alerted, new BehaviorVariableValue(b: true));
+            }
 
             return lance;
         }
@@ -133,6 +138,9 @@ namespace MonsterMashup.Helper
 
                 // Force the turret to be hidden from the player
                 fakeVehicle.OnPlayerVisibilityChanged(VisibilityLevel.None);
+
+                // TEST
+                SharedState.CombatHUD.PhaseTrack.AddIconTracker(fakeVehicle);
 
                 // Link units via CU
                 ICustomMech custMech = parent as ICustomMech;

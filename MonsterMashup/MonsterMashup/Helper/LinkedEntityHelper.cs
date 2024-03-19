@@ -83,7 +83,7 @@ namespace MonsterMashup.Helper
                 foreach (AttachMapping am in arcLimiter.AttachMappings)
                 {
                     Mod.Log.Info?.Write($"  ---- transform: {am.Transform}  hardpoints: {String.Join(",", am.HardpointID)}  " +
-                        $"alignRepresentation: {am.AlignRepresentation} RestrictedFiringArc: {am.RestrictedFiringArc}");
+                        $"RestrictedFiringArc: {am.RestrictedFiringArc}");
                     ProcessAttachMappings(am, mech, weaponsByHardpointId);
                 }
             }
@@ -117,47 +117,32 @@ namespace MonsterMashup.Helper
                     ModState.WeaponAttachTransforms.Add(hardpointWeapon, attachTransform);
 
                     Mod.Log.Info?.Write($"Processing attach_mapping for weapon: {hardpointWeapon.Description.UIName}_{hardpointWeapon.uid} in hardpoint: {hardpointId}");
-                    if (am.AlignRepresentation)
-                    {
-                        Mod.Log.Info?.Write($"  - aligning to attach transform: {am.Transform} with forward: {attachTransform.forward}");
-
-                        //Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(0f, 0f, 0f);
-                        Mod.Log.Debug?.Write($"  - BEFORE\n" +
-                            $"GO current rotation: {hardpointWeapon.weaponRep.gameObject.transform.rotation} " +
-                            $"GO parent rotation: {hardpointWeapon.weaponRep.gameObject.transform.parent.rotation} " +
-                            $"GO forward: {hardpointWeapon.weaponRep.gameObject.transform.forward}" +
-                            "\n" +
-                            $"rep rotation: {hardpointWeapon.weaponRep.transform.rotation} " +
-                            $"rep parent rotation: {hardpointWeapon.weaponRep.transform.parent.rotation} " +
-                            $"rep forward: {hardpointWeapon.weaponRep.transform.forward}"
-                            );
-                        //hardpointWeapon.weaponRep.gameObject.transform.rotation.SetFromToRotation(hardpointWeapon.weaponRep.gameObject.transform.forward, attachTransform.forward);
-                        Quaternion newRot = hardpointWeapon.weaponRep.transform.parent.rotation;
-                        //newRot.SetLookRotation(attachTransform.right);
-                        Mod.Log.Debug?.Write($" - NEW_ROT: {newRot}");
-                        //hardpointWeapon.weaponRep.gameObject.transform.rotation = newRot;
-                        //hardpointWeapon.weaponRep.gameObject.transform.parent.rotation = newRot;
-                        //hardpointWeapon.weaponRep.transform.rotation = newRot;
-                        hardpointWeapon.weaponRep.transform.parent.rotation = newRot;
-
-                        //hardpointWeapon.weaponRep.transform.parent.rotation.SetFromToRotation(hardpointWeapon.weaponRep.gameObject.transform.forward, attachTransform.right * 180);
-                        hardpointWeapon.weaponRep.transform.parent.rotation.SetFromToRotation(hardpointWeapon.weaponRep.transform.parent.transform.forward, attachTransform.right);
-                        Mod.Log.Debug?.Write($"  - AFTER\n" +
-                            $"GO current rotation: {hardpointWeapon.weaponRep.gameObject.transform.rotation} " +
-                            $"GO parent rotation: {hardpointWeapon.weaponRep.gameObject.transform.parent.rotation} " +
-                            $"GO forward: {hardpointWeapon.weaponRep.gameObject.transform.forward}" +
-                            "\n" +
-                            $"rep rotation: {hardpointWeapon.weaponRep.transform.rotation} " +
-                            $"rep parent rotation: {hardpointWeapon.weaponRep.transform.parent.rotation} " +
-                            $"rep forward: {hardpointWeapon.weaponRep.transform.forward}"
-                            );
-
-                        //Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
-                        //fakeVehicle.GameRep.transform.rotation = Quaternion.RotateTowards(fakeVehicle.GameRep.transform.rotation, alignVector, 9999f);
-                        //fakeVehicle.CurrentRotation = fakeVehicle.GameRep.transform.rotation;
-
-
-                    }
+                    //if (am.AlignRepresentation)
+                    //{
+                    //    Mod.Log.Info?.Write($"  - aligning to attach transform: {am.Transform} with forward: {attachTransform.forward}");
+                    //    Mod.Log.Debug?.Write($"  - BEFORE\n" +
+                    //        $"GO current rotation: {hardpointWeapon.weaponRep.gameObject.transform.rotation} " +
+                    //        $"GO parent rotation: {hardpointWeapon.weaponRep.gameObject.transform.parent.rotation} " +
+                    //        $"GO forward: {hardpointWeapon.weaponRep.gameObject.transform.forward}" +
+                    //        "\n" +
+                    //        $"rep rotation: {hardpointWeapon.weaponRep.transform.rotation} " +
+                    //        $"rep parent rotation: {hardpointWeapon.weaponRep.transform.parent.rotation} " +
+                    //        $"rep forward: {hardpointWeapon.weaponRep.transform.forward}"
+                    //        );
+                    //    Quaternion newRot = hardpointWeapon.weaponRep.transform.parent.rotation;
+                    //    Mod.Log.Debug?.Write($" - NEW_ROT: {newRot}");
+                    //    hardpointWeapon.weaponRep.transform.parent.rotation = newRot;
+                    //    hardpointWeapon.weaponRep.transform.parent.rotation.SetFromToRotation(hardpointWeapon.weaponRep.transform.parent.transform.forward, attachTransform.right);
+                    //    Mod.Log.Debug?.Write($"  - AFTER\n" +
+                    //        $"GO current rotation: {hardpointWeapon.weaponRep.gameObject.transform.rotation} " +
+                    //        $"GO parent rotation: {hardpointWeapon.weaponRep.gameObject.transform.parent.rotation} " +
+                    //        $"GO forward: {hardpointWeapon.weaponRep.gameObject.transform.forward}" +
+                    //        "\n" +
+                    //        $"rep rotation: {hardpointWeapon.weaponRep.transform.rotation} " +
+                    //        $"rep parent rotation: {hardpointWeapon.weaponRep.transform.parent.rotation} " +
+                    //        $"rep forward: {hardpointWeapon.weaponRep.transform.forward}"
+                    //        );
+                    //}
 
                     if (am.RestrictedFiringArc != 0)
                     {

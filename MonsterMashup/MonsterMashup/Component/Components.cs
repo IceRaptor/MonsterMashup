@@ -27,7 +27,6 @@ namespace MonsterMashup.Component
         public string Transform = "";
 #pragma warning disable CS0649
         public int[] HardpointID;
-        public bool AlignRepresentation = true;
         public int RestrictedFiringArc = 0;
     }
 

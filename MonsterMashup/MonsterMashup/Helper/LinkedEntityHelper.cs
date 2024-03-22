@@ -89,7 +89,7 @@ namespace MonsterMashup.Helper
             }
             else
             {
-                Mod.Log.Info?.Write($"FAILED TO FIND CC FOR FIRING ARC");
+                Mod.Log.Debug?.Write($"Actor had no firing arc limiter");
             }
         }
 
@@ -117,33 +117,6 @@ namespace MonsterMashup.Helper
                     ModState.WeaponAttachTransforms.Add(hardpointWeapon, attachTransform);
 
                     Mod.Log.Info?.Write($"Processing attach_mapping for weapon: {hardpointWeapon.Description.UIName}_{hardpointWeapon.uid} in hardpoint: {hardpointId}");
-                    //if (am.AlignRepresentation)
-                    //{
-                    //    Mod.Log.Info?.Write($"  - aligning to attach transform: {am.Transform} with forward: {attachTransform.forward}");
-                    //    Mod.Log.Debug?.Write($"  - BEFORE\n" +
-                    //        $"GO current rotation: {hardpointWeapon.weaponRep.gameObject.transform.rotation} " +
-                    //        $"GO parent rotation: {hardpointWeapon.weaponRep.gameObject.transform.parent.rotation} " +
-                    //        $"GO forward: {hardpointWeapon.weaponRep.gameObject.transform.forward}" +
-                    //        "\n" +
-                    //        $"rep rotation: {hardpointWeapon.weaponRep.transform.rotation} " +
-                    //        $"rep parent rotation: {hardpointWeapon.weaponRep.transform.parent.rotation} " +
-                    //        $"rep forward: {hardpointWeapon.weaponRep.transform.forward}"
-                    //        );
-                    //    Quaternion newRot = hardpointWeapon.weaponRep.transform.parent.rotation;
-                    //    Mod.Log.Debug?.Write($" - NEW_ROT: {newRot}");
-                    //    hardpointWeapon.weaponRep.transform.parent.rotation = newRot;
-                    //    hardpointWeapon.weaponRep.transform.parent.rotation.SetFromToRotation(hardpointWeapon.weaponRep.transform.parent.transform.forward, attachTransform.right);
-                    //    Mod.Log.Debug?.Write($"  - AFTER\n" +
-                    //        $"GO current rotation: {hardpointWeapon.weaponRep.gameObject.transform.rotation} " +
-                    //        $"GO parent rotation: {hardpointWeapon.weaponRep.gameObject.transform.parent.rotation} " +
-                    //        $"GO forward: {hardpointWeapon.weaponRep.gameObject.transform.forward}" +
-                    //        "\n" +
-                    //        $"rep rotation: {hardpointWeapon.weaponRep.transform.rotation} " +
-                    //        $"rep parent rotation: {hardpointWeapon.weaponRep.transform.parent.rotation} " +
-                    //        $"rep forward: {hardpointWeapon.weaponRep.transform.forward}"
-                    //        );
-                    //}
-
                     if (am.RestrictedFiringArc != 0)
                     {
                         Mod.Log.Info?.Write($"  - restricting to arc: {am.RestrictedFiringArc}");

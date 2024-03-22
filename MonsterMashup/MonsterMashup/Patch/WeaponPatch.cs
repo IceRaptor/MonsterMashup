@@ -27,9 +27,6 @@ namespace MonsterMashup.Patch
                 }
 
                 Mod.Log.Debug?.Write($"Weapon: {__instance.UIName}_{__instance.uid} has restrictedFiringArc: {restrictedFiringArc} with transform: {weaponAttachTransform.name}");
-                //Quaternion attachTransformRot = Quaternion.LookRotation(weaponAttachTransform.forward);
-                //float firingAngle = Quaternion.Angle(target.CurrentRotation, attachTransformRot);
-                //float firingAngle = Vector3.Angle(attachTransform.forward, target.CurrentPosition);
                 Vector3 targetToAttach = target.TargetPosition - weaponAttachTransform.position;
                 float firingAngle = Vector3.Angle(weaponAttachTransform.forward, targetToAttach);
                 __result = firingAngle < restrictedFiringArc;

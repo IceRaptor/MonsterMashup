@@ -48,7 +48,8 @@ namespace MonsterMashup.Patch
                             float newScale = crushComponent.Radius * 2.0f + 20f; // The asset needs 20 added to it to match the radius, not sure why.
                             Mod.Log.Debug?.Write($" -- Setting crush radius transform: {childTF.name} to scale: {newScale}");
                             childTF.localScale = new Vector3(newScale, newScale, newScale);
-                            childTF.gameObject.SetActive(true);
+
+                            childTF.gameObject.SetActive(crushComponent.ShowRadius);
                         }
                     }
                 }

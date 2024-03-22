@@ -1,7 +1,9 @@
 ﻿using IRBTModUtils;
 using IRBTModUtils.Extension;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using static Localize.Text;
 
 namespace MonsterMashup.Patch
 {
@@ -12,7 +14,7 @@ namespace MonsterMashup.Patch
         // check to see if our parent's visibility is none. If so, hide our own visiblity.
         static void Prefix(ref bool __runOriginal, LineOfSight __instance, ref VisibilityLevel __result, ICombatant target)
         {
-            Mod.Log.Info?.Write($"GVTTWPAR Target: {target.DistinctId()}");
+            Mod.Log.Trace?.Write($"GVTTWPAR Target: {target.DistinctId()}");
             if (!__runOriginal) return;
 
             if (__instance == null || target == null) return;
@@ -40,7 +42,7 @@ namespace MonsterMashup.Patch
         // check to see if our parent's visibility is greater than ours. If so, up our visibility to the same level as the parent
         static void Postfix(LineOfSight __instance, ref VisibilityLevel __result, ICombatant target)
         {
-            Mod.Log.Info?.Write($"GVTTWPAR Target: {target.DistinctId()}");
+            Mod.Log.Trace?.Write($"GVTTWPAR Target: {target.DistinctId()}");
 
             if (__instance == null || target == null) return;
 
@@ -61,6 +63,22 @@ namespace MonsterMashup.Patch
                     {
                         __result = VisibilityLevel.None;
                         Mod.Log.Info?.Write($"  -- Hiding sensor blip");
+                    }
+                }
+            }
+
+            // Check for linked turrets, hide them if less than full vis
+            bool hasKey = ModState.ParentToLinkedActors.TryGetValue(target.DistinctId(), out List<AbstractActor> children);
+            if (hasKey)
+            {
+                VisibilityLevel parentVisibility = SharedState.Combat.LocalPlayerTeam.VisibilityToTarget(target);
+                if (parentVisibility < VisibilityLevel.LOSFull)
+                {
+                    Mod.Log.Debug?.Write($"Parent: {target.DistinctId()} has visiblity less than LOFFull, hiding children.");
+                    foreach (AbstractActor child in children)
+                    {
+                        Mod.Log.Debug?.Write($"  -- hiding child: {child.DistinctId()}");
+                        child.OnPlayerVisibilityChanged(VisibilityLevel.None);
                     }
                 }
             }

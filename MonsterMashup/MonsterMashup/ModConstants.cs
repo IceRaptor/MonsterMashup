@@ -9,11 +9,14 @@ namespace MonsterMashup
 
     public class ModStats
     {
-        public const string Linked_Parent_Actor_UID = "MMASH_Linked_Parent_Actor_UID";
-        public const string Linked_Parent_MechComp_UID = "MMASH_Linked_Parent_MechComp_UID";
-        public const string Linked_Child_UID = "MMASH_Linked_Child_GUID";
+        public const string Linked_Parent_Actor_UID = "MMASH_Linked_Parent_Actor_UID"; // string 
+        public const string Linked_Parent_MechComp_UID = "MMASH_Linked_Parent_MechComp_UID"; // string 
+        public const string Linked_Child_UID = "MMASH_Linked_Child_GUID"; // string 
 
-        public const string Weapon_Restricted_Firing_Arc = "MMASH_RestrictedFiringArc";
+        public const string Weapon_Restricted_Firing_Arc = "MMASH_RestrictedFiringArc"; // float, arc of restriction
+
+        public const string Crush_On_Move = "MMASH_Crush_On_Move"; // bool; if true, taunt
+        public const string Prevent_Melee = "MMASH_Prevent_Melee"; // bool; if true, cannot be targeted by melee pathnodes
 
         // HBS Values
         public const string HBS_HeatSinkCapacity = "HeatSinkCapacity";

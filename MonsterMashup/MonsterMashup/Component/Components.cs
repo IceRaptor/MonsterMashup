@@ -1,6 +1,4 @@
 ﻿using CustomComponents;
-using System;
-using System.Collections.Generic;
 
 namespace MonsterMashup.Component
 {
@@ -30,5 +28,33 @@ namespace MonsterMashup.Component
         public int RestrictedFiringArc = 0;
     }
 
+    [CustomComponent("MM_CrushOnCollision")]
+    public class CrushOnCollisionComponent : SimpleCustomChassis
+    {
+        public bool PlayTaunt = true;
+        public float Radius = 8f;
+        public bool ShowRadius = false;
+        public string RadiusTransform = string.Empty;
+    }
+
+    [CustomComponent("MM_PreventMelee")]
+    public class PreventMeleeComponent : SimpleCustomChassis
+    {
+    }
+
+    [CustomComponent("MM_CombatSpawn")]
+    public class CombatSpwanComponent : SimpleCustomChassis
+    {
+        public SpawnConfig[] Spawns;
+    }
+
+    public class SpawnConfig
+    {
+        public string AttachPoint;
+        public string CUVehicleDefId;
+        public string PilotDefId;
+        public int MaxSpawns = 0; // total to spawn
+        public int RoundsBetweenSpawns = 0; // rounds between spawns
+    }
 
 }

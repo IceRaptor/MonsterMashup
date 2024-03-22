@@ -1,4 +1,5 @@
-﻿using BattleTech.Data;
+﻿using BattleTech;
+using BattleTech.Data;
 using CustomComponents;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
@@ -44,6 +45,30 @@ namespace MonsterMashup.Helper
                         ModState.ComponentsToLink.Add((component, linkedTurret));
                     }
                 }
+
+                if (actor is Mech mech)
+                {
+                    if (mech.MechDef.Chassis.Is<CombatSpwanComponent>(out CombatSpwanComponent timedSpawnComponent))
+                    {
+                        foreach (SpawnConfig spawnConfig in timedSpawnComponent.Spawns)
+                        {
+                            Mod.Log.Info?.Write($"  -- TimedSpawnConfig =>  attachPoint: {spawnConfig.AttachPoint}  " +
+                                $"CU vehicle: {spawnConfig.CUVehicleDefId}  pilotDefId: {spawnConfig.PilotDefId}");
+
+                            if (!String.IsNullOrEmpty(spawnConfig.CUVehicleDefId))
+                                vehiclesToLoad.Add(spawnConfig.CUVehicleDefId);
+
+                            pilotsToLoad.Add(spawnConfig.PilotDefId);
+                        }
+                    }
+                    else
+                    {
+                        Mod.Log.Debug?.Write($"  - actor had no TimedSpawnComponent");
+                    }
+
+
+                }
+
             }
             Mod.Log.Info?.Write($"== DONE");
 

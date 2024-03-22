@@ -1,5 +1,5 @@
 ﻿using CustomComponents;
-using CustomUnits;
+using IRBTModUtils;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
 using MonsterMashup.Helper;
@@ -23,6 +23,35 @@ namespace MonsterMashup.Patch
                 Mod.Log.Info?.Write($" Developer option to kill linked turrets invoked on actor: {__instance.DistinctId()} at location: {aLoc}");
                 LinkedEntityHelper.DestroyLinksInLocation(__instance, chassisLocationFromArmorLocation);
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(Mech), "OnActivationEnd")]
+    static class Mech_OnActivationEnd
+    {
+        static void Postfix(Mech __instance, string sourceID, int stackItemID)
+        {
+            bool hasSpawns = ModState.ChildSpawns.TryGetValue(__instance.DistinctId(), out List<SupportSpawnState> spawns);
+            bool didSpawn = false;
+            if (hasSpawns)
+            {
+                Mod.Log.Debug?.Write($"Actor: {__instance.DistinctId()} has spawns, iterating configs.");
+                foreach (SupportSpawnState state in spawns)
+                {
+                    Mod.Log.Debug?.Write($"Actor: {__instance.DistinctId()} has spawns, iterating configs.");
+                    if (state.TrySpawn())
+                        didSpawn = true;
+                }
+            }
+
+            if (didSpawn)
+            {
+                Mod.Log.Debug?.Write("Taunting player.");
+                // Create a quip
+                Guid g = Guid.NewGuid();
+                QuipHelper.PlayQuip(SharedState.Combat, g.ToString(), __instance.team, __instance.DisplayName, Mod.LocalizedText.Quips.SupportSpawn, 5f);
+            }
+
         }
     }
 
@@ -51,21 +80,29 @@ namespace MonsterMashup.Patch
 
             __runOriginal = true;
         }
-    }
 
-    [HarmonyPatch(typeof(UnitSpawnPointGameLogic), "initializeActor")]
-    static class UnitSpawnPointGameLogic_initializeActor
-    {
-        static void Postfix(UnitSpawnPointGameLogic __instance, AbstractActor actor, Team team, Lance lance)
+        // Check to see if the unit has 'crush on collision' enabled. If so, destroy any enemy units within range of us
+        static void Postfix(Mech __instance, ref Vector3 position, ref Quaternion heading)
         {
-            Mod.Log.Info?.Write($"UnitSpawnPointGameLogic::initializeActor for actor: {actor.DistinctId()}");
-
-            if (actor is Mech mech)
+            Mod.Log.Trace?.Write($"OnPositionUpdate for actor: {__instance.DistinctId()} => newPos: {position}  heading: {heading}");
+            if (__instance.StatCollection.ContainsStatistic(ModStats.Crush_On_Move))
             {
-                LinkedEntityHelper.ProcessWeapons(mech);
-            }
+                __instance.MechDef.Chassis.Is(out CrushOnCollisionComponent crushComponent);
+                Mod.Log.Info?.Write($"Actor: {__instance.DistinctId()} marked with crush on move, checking for nearby hostiles");
+                foreach (AbstractActor target in SharedState.Combat.AllActors)
+                {
+                    if (target.IsFlaggedForDeath || target.IsDead) continue; // nothing to do
 
+                    float distToTarget = Vector3.Distance(target.CurrentIntendedPosition, position);
+                    bool isHostile = SharedState.Combat.HostilityMatrix.IsEnemy(target.team.GUID, __instance.team.GUID);
+                    Mod.Log.Debug?.Write($"  -- checking target: {target.DistinctId()} distance of: {distToTarget} vs. radius: {crushComponent.Radius}  isHostile: {isHostile}");
+                    if (distToTarget < crushComponent.Radius && isHostile)
+                    {
+                        Mod.Log.Info?.Write($"  target: {target.DistinctId()} within crush radius {crushComponent.Radius}, destroying.");
+                        UnitHelper.CrushTarget(__instance, target, crushComponent.PlayTaunt);
+                    }
+                }
+            }
         }
     }
-
 }

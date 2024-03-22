@@ -1,4 +1,5 @@
 ﻿using MonsterMashup.Component;
+using MonsterMashup.Helper;
 using MonsterMashup.UI;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace MonsterMashup
         internal static Dictionary<string, AbstractActor> LinkedActors = new Dictionary<string, AbstractActor>();
         internal static Dictionary<string, Transform> AttachTransforms = new Dictionary<string, Transform>();
         internal static Dictionary<Weapon, Transform> WeaponAttachTransforms = new Dictionary<Weapon, Transform>();
+        internal static Dictionary<string, List<SupportSpawnState>> ChildSpawns = new Dictionary<string, List<SupportSpawnState>>();
 
         internal static HashSet<AbstractActor> Parents = new HashSet<AbstractActor>();
 
@@ -40,6 +42,7 @@ namespace MonsterMashup
             LinkedActors.Clear();
             AttachTransforms.Clear();
             WeaponAttachTransforms.Clear();
+            ChildSpawns.Clear();
             Parents.Clear();
         }
     }

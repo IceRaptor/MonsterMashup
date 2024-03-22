@@ -12,6 +12,7 @@
     "AOEHeight": 0,
     "FiringArc": 60,
 	"UnitTypeName" : "DROPSHIP",
+	"BossAppearAnimation": false,
     "Unaffected": {
       "DesignMasks": "true",
       "Pathing": "false",
@@ -20,13 +21,20 @@
       "MoveClamp": 0.3
     }
   },
-  "MovementCapDefID": "movedef_DEMOLISHER",
+  "Custom": {
+    "MM_TriggeredFlee": {
+		"TriggerOnAllLinkedActorsDead": true,
+		"RoundsToDelay": 3,
+		"ParticleParentGO": "dust_emitters"
+    }
+  },  
+  "MovementCapDefID": "movedef_IMMOBILE_TURRET",
   "PathingCapDefID": "pathingdef_light_wheeled",
   "HardpointDataDefID": "hardpointdatadef_cuoverlord",
   "PrefabIdentifier": "chrprfmech_overlord_dropship",
   "PrefabBase": "cudropshipballturret",
-  "Tonnage": 30,
-  "weightClass": "LIGHT",
+  "Tonnage": 9700,
+  "weightClass": "ASSAULT",
   "BattleValue": 564,
   "TopSpeed": 0,
   "TurnRadius": 90,

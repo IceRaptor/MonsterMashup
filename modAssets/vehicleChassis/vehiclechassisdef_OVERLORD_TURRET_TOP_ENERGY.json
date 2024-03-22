@@ -21,13 +21,13 @@
       "Landmines": "true"
     }
   },
-  "MovementCapDefID": "movedef_DEMOLISHER",
+  "MovementCapDefID": "movedef_IMMOBILE_TURRET",
   "PathingCapDefID": "pathingdef_light_wheeled",
   "HardpointDataDefID": "hardpointdatadef_cudropshipballturret",
   "PrefabIdentifier": "chrprfmech_dropship_ball_turret",
   "PrefabBase": "cudropshipballturret",
-  "Tonnage": 30,
-  "weightClass": "LIGHT",
+  "Tonnage": 100,
+  "weightClass": "ASSAULT",
   "BattleValue": 564,
   "TopSpeed": 25,
   "TurnRadius": 90,

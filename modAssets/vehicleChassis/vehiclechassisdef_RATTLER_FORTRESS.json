@@ -60,7 +60,7 @@
 	  "MM_CrushOnCollision": {
 		"Taunt" : true,
 		"Radius" : 100,
-		"ShowRadius" : true,
+		"ShowRadius" : false,
 		"RadiusTransform" : "crush_warning_ring"
 	  },
 	  "MM_CombatSpawn" : {
@@ -78,7 +78,7 @@
   "HardpointDataDefID": "hardpointdatadef_curattler",
   "PrefabIdentifier": "chrprfmech_rattler-fortress",
   "PrefabBase": "curattler",
-  "Tonnage": 100,
+  "Tonnage": 6000,
   "weightClass": "ASSAULT",
   "BattleValue": 564,
   "TopSpeed": 85,

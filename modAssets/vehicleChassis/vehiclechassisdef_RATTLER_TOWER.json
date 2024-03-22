@@ -10,7 +10,7 @@
   },
   "CustomParts": {
     "AOEHeight": 0,
-    "FiringArc": 90,
+    "FiringArc": 360,
 	"UnitTypeName" : "TURRET",
     "FakeVehicle": true,
 	"TurretArmorReadout": true,
@@ -21,6 +21,16 @@
       "Landmines": "true"
     }
   },
+	"Custom": {
+	  "MM_WeaponController": {
+		  "AttachMappings" : [
+			{ "Transform": "weapon_attach_front_left_ams", "HardpointID": [3], "RestrictedFiringArc": 90 },
+			{ "Transform": "weapon_attach_front_right_ams", "HardpointID": [4], "RestrictedFiringArc": 90 },
+			{ "Transform": "weapon_attach_rear_left_ams", "HardpointID": [5], "RestrictedFiringArc": 90 },
+			{ "Transform": "weapon_attach_rear_right_ams", "HardpointID": [6], "RestrictedFiringArc": 90 }
+		  ]		  
+	  }
+	},	  
   "MovementCapDefID": "movedef_DEMOLISHER",
   "PathingCapDefID": "pathingdef_light_wheeled",
   "HardpointDataDefID": "hardpointdatadef_curattler_tower",

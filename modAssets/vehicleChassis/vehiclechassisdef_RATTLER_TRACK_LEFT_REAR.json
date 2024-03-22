@@ -10,7 +10,7 @@
   },
   "CustomParts": {
     "AOEHeight": 0,
-    "FiringArc": 90,
+    "FiringArc": 360,
 	"UnitTypeName" : "TURRET",
     "FakeVehicle": true,
 	"TurretArmorReadout": true,
@@ -21,7 +21,18 @@
       "Landmines": "true"
     }
   },
-  "MovementCapDefID": "movedef_DEMOLISHER",
+	"Custom": {
+	  "MM_WeaponController": {
+		  "AttachMappings" : [
+			{ "Transform": "weapon_attach_top_pedestal", "HardpointID": [1, 2, 3], "RestrictedFiringArc": 90 },
+			{ "Transform": "weapon_attach_forward_ball", "HardpointID": [4], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapon_attach_missiles_side", "HardpointID": [5], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapon_attach_small_turret_lower", "HardpointID": [6], "RestrictedFiringArc": 90 },
+			{ "Transform": "weapon_attach_small_turret_upper", "HardpointID": [7], "RestrictedFiringArc": 90 }
+		  ]		 
+	  }
+	},	  
+  "MovementCapDefID": "movedef_IMMOBILE_TURRET",
   "PathingCapDefID": "pathingdef_light_wheeled",
   "HardpointDataDefID": "hardpointdatadef_curattler_track_left_rear",
   "PrefabIdentifier": "chrprfmech_rattler_track_left_rear-turret",
@@ -33,82 +44,42 @@
   "TurnRadius": 90,
   "movementType": "Tracked",
   "SpotterDistanceMultiplier": 1,
-  "VisibilityMultiplier": 0.85,
+  "VisibilityMultiplier": 1,
   "SensorRangeMultiplier": 1,
   "Signature": 0,
   "Radius": 4,
   "LOSSourcePositions": [
     {
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    {
-      "x": 6,
-      "y": 0,
-      "z": 0
-    },
-    {
-      "x": -6,
-      "y": 0,
+      "x": 15,
+      "y": 7,
       "z": 0
     },
     {
       "x": 0,
-      "y": 6,
+      "y": 11,
       "z": 0
     },
     {
-      "x": 0,
-      "y": -6,
+      "x": -15,
+      "y": 7,
       "z": 0
-    },
-    {
-      "x": 0,
-      "y": 0,
-      "z": 6
-    },
-    {
-      "x": 0,
-      "y": 0,
-      "z": -6
     }
   ],
   "LOSTargetPositions": [
-{
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
     {
-      "x": 6,
-      "y": 0,
-      "z": 0
-    },
-    {
-      "x": -6,
-      "y": 0,
+      "x": 15,
+      "y": 7,
       "z": 0
     },
     {
       "x": 0,
-      "y": 6,
+      "y": 11,
       "z": 0
     },
     {
-      "x": 0,
-      "y": -6,
+      "x": -15,
+      "y": 7,
       "z": 0
-    },
-    {
-      "x": 0,
-      "y": 0,
-      "z": 6
-    },
-    {
-      "x": 0,
-      "y": 0,
-      "z": -6
     }
   ],
   "Locations": [

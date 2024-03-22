@@ -72,35 +72,35 @@
 		  "ComponentDefID": "Weapon_PrefabTest_NavalLaser",
 		  "ComponentDefType": "Weapon",
 		  "MountedLocation": "Turret",		  
-		  "HardpointSlot": 1,
+		  "HardpointSlot": 2,
 		  "DamageLevel" : "Functional"
 		},			
 		{
 		  "ComponentDefID": "Weapon_Ballistic_AMS_0-STOCK",
 		  "ComponentDefType": "Weapon",
 		  "MountedLocation": "Turret",		  
-		  "HardpointSlot": 1,
+		  "HardpointSlot": 3,
 		  "DamageLevel" : "Functional"
 		},		
 		{
 		  "ComponentDefID": "Weapon_Ballistic_AMS_0-STOCK",
 		  "ComponentDefType": "Weapon",
 		  "MountedLocation": "Turret",		  
-		  "HardpointSlot": 1,
+		  "HardpointSlot": 4,
 		  "DamageLevel" : "Functional"
 		},
 		{
 		  "ComponentDefID": "Weapon_Ballistic_AMS_0-STOCK",
 		  "ComponentDefType": "Weapon",
 		  "MountedLocation": "Turret",		  
-		  "HardpointSlot": 1,
+		  "HardpointSlot": 5,
 		  "DamageLevel" : "Functional"
 		},
 		{
 		  "ComponentDefID": "Weapon_Ballistic_AMS_0-STOCK",
 		  "ComponentDefType": "Weapon",
 		  "MountedLocation": "Turret",		  
-		  "HardpointSlot": 1,
+		  "HardpointSlot": 6,
 		  "DamageLevel" : "Functional"
 		},		
 		{

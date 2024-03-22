@@ -10,7 +10,7 @@
   },
   "CustomParts": {
     "AOEHeight": 0,
-    "FiringArc": 90,
+    "FiringArc": 360,
 	"UnitTypeName" : "VEHICLE",
     "FakeVehicle": true,
 	"TurretArmorReadout": true,
@@ -24,6 +24,55 @@
     "FakeVehicleCrewLocation": "Front",
     "TieToGroundOnDeath": "true"	
   },
+	"Custom": {
+	  "MM_WeaponController": {
+		  "AttachMappings" : [
+			{ "Transform": "weapons_attach_body_front_center", "HardpointID": [1], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_front_forward_left_turret", "HardpointID": [2], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_front_forward_right_turret", "HardpointID": [3], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_front_upperdeck_left_ams", "HardpointID": [4], "RestrictedFiringArc": 90 },
+			{ "Transform": "weapons_attach_front_upperdeck_right_ams", "HardpointID": [5], "RestrictedFiringArc": 90 },
+
+			{ "Transform": "weapons_attach_rear_forward_left_turret", "HardpointID": [6], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_rear_forward_right_turret", "HardpointID": [7], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_rear_upperdeck_left_ams", "HardpointID": [8], "RestrictedFiringArc": 90 },
+			{ "Transform": "weapons_attach_rear_upperdeck_right_ams", "HardpointID": [9], "RestrictedFiringArc": 90 },
+
+			{ "Transform": "weapons_attach_left_upper_front_missiles", "HardpointID": [10], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_left_upper_rear_missiles", "HardpointID": [11], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_left_lower_front_missile", "HardpointID": [12], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_left_lower_rear_missile", "HardpointID": [13], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_left_upper_front_turret", "HardpointID": [14], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_left_upper_rear_turret", "HardpointID": [15], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_left_under_front", "HardpointID": [16], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_left_under_rear", "HardpointID": [17], "RestrictedFiringArc": 45 },
+			
+			{ "Transform": "weapons_attach_right_upper_front_missiles", "HardpointID": [18], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_right_upper_rear_missiles", "HardpointID": [19], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_right_lower_front_missile", "HardpointID": [20], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_right_lower_rear_missile", "HardpointID": [21], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_right_upper_front_turret", "HardpointID": [22], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_right_upper_rear_turret", "HardpointID": [23], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_right_under_front", "HardpointID": [24], "RestrictedFiringArc": 45 },
+			{ "Transform": "weapons_attach_right_under_rear", "HardpointID": [25], "RestrictedFiringArc": 45 }
+		  ]		  
+	  },		
+	  "MM_CrushOnCollision": {
+		"Taunt" : true,
+		"Radius" : 100,
+		"ShowRadius" : true,
+		"RadiusTransform" : "crush_warning_ring"
+	  },
+	  "MM_CombatSpawn" : {
+		"Spawns" : [
+		  { "AttachPoint": "rattler_spawn_lower_front", "CUVehicleDefId" : "vehicledef_DEMOLISHER", "PilotDefId" : "pilot_d10_brawler", "MaxSpawns": 4, "RoundsBetweenSpawns": 2 },
+		  { "AttachPoint": "rattler_spawn_lower_rear", "CUVehicleDefId" : "vehicledef_DEMOLISHER", "PilotDefId" : "pilot_d10_brawler", "MaxSpawns": 4, "RoundsBetweenSpawns": 2 },
+		  { "AttachPoint": "rattler_spawn_lower_left", "CUVehicleDefId" : "vehicledef_DEMOLISHER", "PilotDefId" : "pilot_d10_brawler", "MaxSpawns": 4, "RoundsBetweenSpawns": 2 },
+		  { "AttachPoint": "rattler_spawn_lower_right", "CUVehicleDefId" : "vehicledef_DEMOLISHER", "PilotDefId" : "pilot_d10_brawler", "MaxSpawns": 4, "RoundsBetweenSpawns": 2 },
+		  { "AttachPoint": "rattler_spawn_lower_helipad", "CUVehicleDefId" : "vehicledef_YELLOWJACKET", "PilotDefId" : "pilot_d10_brawler", "MaxSpawns": 4, "RoundsBetweenSpawns": 1 }
+		]
+	  }
+	},  
   "MovementCapDefID": "movedef_RATTLER",
   "PathingCapDefID": "pathingdef_assault",
   "HardpointDataDefID": "hardpointdatadef_curattler",
@@ -39,123 +88,60 @@
   "VisibilityMultiplier": 1,
   "SensorRangeMultiplier": 1,
   "Signature": 1,
-  "Radius": 60,
+  "Radius": 70,
   "LOSSourcePositions": [  
-		{
-		    "x" : 0,
-		    "y" : 15,
-		    "z" : 55
-	    },
-		{
-		    "x" : 0,
-		    "y" : 15,
-		    "z" : -45
-	    },
-		{
-		    "x" : -46,
-		    "y" : 20,
-		    "z" : 0
-	    },
-		{
-		    "x" : 46,
-		    "y" : 20,
-		    "z" : 0
-	    }
+	{
+		"x" : 0,
+		"y" : 22,
+		"z" : 0
+	},
+	{
+		"x" : 0,
+		"y" : 5,
+		"z" : 55
+	},
+	{
+		"x" : 0,
+		"y" : 26,
+		"z" : -60
+	},
+	{
+		"x" : -60,
+		"y" : 9,
+		"z" : 0
+	},
+	{
+		"x" : 60,
+		"y" : 9,
+		"z" : 0
+	}		
   ],
   "LOSTargetPositions": [
-  		{
-		    "x" : 0,
-		    "y" : 0,
-		    "z" : 42
-	    },
-		{
-		    "x" : 0,
-		    "y" : 33,
-		    "z" : 32
-	    },
-		{
-		    "x" : -18.4,
-		    "y" : 22.5,
-		    "z" : 63.2
-	    },
-		{
-		    "x" : 18.4,
-		    "y" : 22.5,
-		    "z" : 63.2
-	    },
-  
-		{
-		    "x" : 0,
-		    "y" : 0,
-		    "z" : -42
-	    },
-		{
-		    "x" : 0,
-		    "y" : 42,
-		    "z" : -45
-	    },
-		{
-		    "x" : -18.4,
-		    "y" : 22.5,
-		    "z" : -63.2
-	    },
-		{
-		    "x" : 18.4,
-		    "y" : 22.5,
-		    "z" : -63.2
-	    },
-		{
-		    "x" : -15.7,
-		    "y" : 33,
-		    "z" : -86
-	    },
-		{
-		    "x" : 15.7,
-		    "y" : 33,
-		    "z" : -86
-	    },
-		
-		{
-		    "x" : -55,
-		    "y" : 26.4,
-		    "z" : 17.3
-	    },
-		{
-		    "x" : -55,
-		    "y" : 26.4,
-		    "z" : -17.3
-	    },
-		{
-		    "x" : -45.5,
-		    "y" : 0,
-		    "z" : 17.3
-	    },
-		{
-		    "x" : -45.5,
-		    "y" : 0,
-		    "z" : -17.3
-	    },	
-
-		{
-		    "x" : 55,
-		    "y" : 26.4,
-		    "z" : 17.3
-	    },
-		{
-		    "x" : 55,
-		    "y" : 26.4,
-		    "z" : -17.3
-	    },
-		{
-		    "x" : 45.5,
-		    "y" : 0,
-		    "z" : 17.3
-	    },
-		{
-		    "x" : 45.5,
-		    "y" : 0,
-		    "z" : -17.3
-	    }		
+	{
+		"x" : 0,
+		"y" : 22,
+		"z" : 0
+	},
+	{
+		"x" : 0,
+		"y" : 5,
+		"z" : 55
+	},
+	{
+		"x" : 0,
+		"y" : 26,
+		"z" : -60
+	},
+	{
+		"x" : -60,
+		"y" : 9,
+		"z" : 0
+	},
+	{
+		"x" : 60,
+		"y" : 9,
+		"z" : 0
+	}	
   ],
   "Locations": [
     {

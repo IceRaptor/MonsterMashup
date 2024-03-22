@@ -87,7 +87,7 @@
 		  "ComponentDefID": "Weapon_Laser_LargeLaser_0-STOCK",
 		  "ComponentDefType": "Weapon",
 		  "MountedLocation": "Turret",		  
-		  "HardpointSlot": 1,
+		  "HardpointSlot": 4,
 		  "DamageLevel" : "Functional"
 		},		
 		
@@ -95,7 +95,7 @@
 		  "ComponentDefID": "Weapon_PrefabTest_SRM12",
 		  "ComponentDefType": "Weapon",
 		  "MountedLocation": "Turret",		  
-		  "HardpointSlot": 1,
+		  "HardpointSlot": 5,
 		  "DamageLevel" : "Functional"
 		},
 
@@ -103,7 +103,7 @@
 		  "ComponentDefID": "Weapon_MachineGun_MachineGun_0-STOCK",
 		  "ComponentDefType": "Weapon",
 		  "MountedLocation": "Turret",		  
-		  "HardpointSlot": 1,
+		  "HardpointSlot": 6,
 		  "DamageLevel" : "Functional"
 		},
 		
@@ -111,9 +111,9 @@
 		  "ComponentDefID": "Weapon_Ballistic_AMS_0-STOCK",
 		  "ComponentDefType": "Weapon",
 		  "MountedLocation": "Turret",		  
-		  "HardpointSlot": 1,
+		  "HardpointSlot": 7,
 		  "DamageLevel" : "Functional"
-		},		
+		},
 		{
 		  "MountedLocation": "Turret",
 		  "ComponentDefID": "Ammo_AmmunitionBox_Generic_SRM",

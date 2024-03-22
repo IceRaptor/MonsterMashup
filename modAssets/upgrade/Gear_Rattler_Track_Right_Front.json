@@ -1,6 +1,6 @@
 {
   "Custom": {
-	"LinkedTurret": {
+	"MM_LinkedActor": {
 	  "CUVehicleDefId" : "vehicledef_RATTLER_TRACK_RIGHT_FRONT",
 	  "PilotDefId" : "pilot_d3_turret",
 	  "AttachPoint" : "turret_attach_track_right_front",

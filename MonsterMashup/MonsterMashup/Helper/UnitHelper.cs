@@ -4,6 +4,7 @@ using System;
 
 namespace MonsterMashup.Helper
 {
+
     public static class UnitHelper
     {
         public static void CrushTarget(Mech attacker, AbstractActor target, bool quip)

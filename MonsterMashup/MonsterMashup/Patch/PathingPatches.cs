@@ -25,25 +25,6 @@ namespace MonsterMashup.Patch
         }
     }
 
-
-    [HarmonyPatch(typeof(PathingUtil), "DoesMovementLineCollide")]
-    [HarmonyAfter("io.mission.customunits")]
-    static class PathingUtil_DoesMovementLineCollide
-    {
-        // bool DoesMovementLineCollide(AbstractActor thisActor, List<AbstractActor> actors, Vector3 start, Vector3 end, out AbstractActor collision, float meleeRangeMultiplier)
-        static void Postfix(ref bool __result, AbstractActor thisActor, List<AbstractActor> actors, Vector3 start, Vector3 end)
-        {
-
-            Mod.Log.Info?.Write($" -- SourceActor: {thisActor.DistinctId()} has radius: {thisActor.Radius} with doesCollide: {__result}");
-            foreach (AbstractActor targetActor in actors)
-            {
-                Mod.Log.Info?.Write($" ---- TargetActor: {targetActor.DistinctId()} has radius: {targetActor.Radius}");
-            }
-
-
-        }
-    }
-
     [HarmonyPatch(typeof(PathNode), "HasCollisionAt")]
     static class PathNode_HasCollisionAt
     {
@@ -83,10 +64,10 @@ namespace MonsterMashup.Patch
                         return;
                     }
 
-                    // Neutral or Hostil, check all hexes in our radius
+                    // Neutral or Hostile, check all hexes in our radius
                     int radius = (int)Mathf.Ceil(actor.Radius);
                     List<Vector3> hexGridPoints = SharedState.Combat.HexGrid.GetGridPointsWithinCartesianDistance(actor.CurrentIntendedPosition, radius);
-                    Mod.Log.Debug?.Write($" -- actor: {actor.DistinctId()} occupies: {hexGridPoints.Count} hex points from radius: {radius}");
+                    Mod.Log.Trace?.Write($" -- actor: {actor.DistinctId()} occupies: {hexGridPoints.Count} hex points from radius: {radius}");
                     Vector3 axialCoords = SharedState.Combat.HexGrid.CartesianToHexAxial(pos);
                     Vector2 vector = SharedState.Combat.HexGrid.HexAxialRound(axialCoords);
 

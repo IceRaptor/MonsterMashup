@@ -48,7 +48,7 @@ namespace MonsterMashup.Helper
 
                 if (actor is Mech mech)
                 {
-                    if (mech.MechDef.Chassis.Is<CombatSpwanComponent>(out CombatSpwanComponent timedSpawnComponent))
+                    if (mech.MechDef.Chassis.Is<CombatSpawnComponent>(out CombatSpawnComponent timedSpawnComponent))
                     {
                         foreach (SpawnConfig spawnConfig in timedSpawnComponent.Spawns)
                         {

@@ -36,13 +36,13 @@ namespace MonsterMashup.Patch
                 Mod.Log.Debug?.Write($"  - actor has CrushOnCollisionComponent");
                 mech.StatCollection.AddStatistic<bool>(ModStats.Crush_On_Move, true);
 
-                if (crushComponent.ShowRadius && !string.IsNullOrEmpty(crushComponent.RadiusTransform))
+                if (!string.IsNullOrEmpty(crushComponent.RadiusTransform))
                 {
                     Mod.Log.Debug?.Write($"Trying to find crush radius transform: {crushComponent.RadiusTransform}");
-                    Transform[] childTransforms = mech.GameRep.GetComponentsInChildren<Transform>();
+                    Transform[] childTransforms = mech.GameRep.GetComponentsInChildren<Transform>(true);
                     foreach (Transform childTF in childTransforms)
                     {
-                        Mod.Log.Debug?.Write($"  -- Found transform: {childTF.name}");
+                        Mod.Log.Trace?.Write($"  -- Found transform: {childTF.name}");
                         if (childTF.name.Equals(crushComponent.RadiusTransform, StringComparison.InvariantCultureIgnoreCase))
                         {
                             float newScale = crushComponent.Radius * 2.0f + 20f; // The asset needs 20 added to it to match the radius, not sure why.
@@ -70,7 +70,7 @@ namespace MonsterMashup.Patch
             }
 
             // Timed Spawn components
-            if (mech.MechDef.Chassis.Is<CombatSpwanComponent>(out CombatSpwanComponent timedSpawnComponent))
+            if (mech.MechDef.Chassis.Is<CombatSpawnComponent>(out CombatSpawnComponent timedSpawnComponent))
             {
                 Mod.Log.Debug?.Write($"Actor: {mech.DistinctId()} has spawn configs, creating new spawnstates");
                 foreach (SpawnConfig spawnConfig in timedSpawnComponent.Spawns)

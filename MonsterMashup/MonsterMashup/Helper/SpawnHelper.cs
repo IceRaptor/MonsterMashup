@@ -5,7 +5,6 @@ using MonsterMashup.Component;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static Localize.Text;
 
 namespace MonsterMashup.Helper
 {
@@ -173,7 +172,17 @@ namespace MonsterMashup.Helper
 
                 // Populate the modstate
                 ModState.Parents.Add(parent);
-                ModState.LinkedActors.Add(fakeVehicle.DistinctId(), parent);
+                ModState.LinkedActorsToParent.Add(fakeVehicle.DistinctId(), parent);
+                bool hasKey = ModState.ParentToLinkedActors.TryGetValue(parent.DistinctId(), out List<AbstractActor> children);
+                if (hasKey)
+                {
+                    children.Add(fakeVehicle);
+                }
+                else
+                {
+                    ModState.ParentToLinkedActors.Add(parent.DistinctId(), new List<AbstractActor>() { fakeVehicle });
+                }
+                
                 ModState.AttachTransforms.Add(fakeVehicle.DistinctId(), attachTransform);
 
                 Mod.Log.Info?.Write($"Spawned vehicleDefId: {linkedTurret.CUVehicleDefId} + pilotDefId: {linkedTurret.PilotDefId} at attach: {attachTransform.position}");

@@ -18,9 +18,12 @@ namespace MonsterMashup
 
         internal static Dictionary<string, FootprintVisualization> FootprintVisuals = new Dictionary<string, FootprintVisualization>();
 
-        internal static Dictionary<string, AbstractActor> LinkedActors = new Dictionary<string, AbstractActor>();
+        internal static Dictionary<string, AbstractActor> LinkedActorsToParent = new Dictionary<string, AbstractActor>();
+        internal static Dictionary<string, List<AbstractActor>> ParentToLinkedActors = new Dictionary<string, List<AbstractActor>>();
+
         internal static Dictionary<string, Transform> AttachTransforms = new Dictionary<string, Transform>();
         internal static Dictionary<Weapon, Transform> WeaponAttachTransforms = new Dictionary<Weapon, Transform>();
+
         internal static Dictionary<string, List<SupportSpawnState>> ChildSpawns = new Dictionary<string, List<SupportSpawnState>>();
 
         internal static HashSet<AbstractActor> Parents = new HashSet<AbstractActor>();
@@ -39,10 +42,11 @@ namespace MonsterMashup
             }
             FootprintVisuals.Clear();
 
-            LinkedActors.Clear();
+            LinkedActorsToParent.Clear();
+            ParentToLinkedActors.Clear();
             AttachTransforms.Clear();
             WeaponAttachTransforms.Clear();
-            ChildSpawns.Clear();
+            ChildSpawns.Clear();            
             Parents.Clear();
         }
     }

@@ -1,4 +1,5 @@
-﻿using CustomComponents;
+﻿using BattleTech.Framework;
+using CustomComponents;
 using IRBTModUtils;
 using IRBTModUtils.Extension;
 using MonsterMashup.Component;
@@ -6,9 +7,19 @@ using MonsterMashup.Helper;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static BattleTech.SimGameBattleSimulator;
 
 namespace MonsterMashup.Patch
 {
+
+    //[HarmonyPatch(typeof(MechValidationRules), "ValidateMechTonnage")]
+    //static class MechValidationRules_ValidateMechTonnage
+    //{
+    //    static void Prefix(ref bool __runOriginal, DataManager dataManager, MechDef mechDef, ref Dictionary<MechValidationType, List<Text>> errorMessages)
+    //    {
+    //        Mod.Log.Info?.Write($"Validating tonnage for unit: {mechDef?.chassisID}");
+    //    }
+    //}
 
     [HarmonyPatch(typeof(Mech), "DEBUG_DamageLocation")]
     static class Mech_DEBUG_DamageLocation
@@ -52,6 +63,74 @@ namespace MonsterMashup.Patch
                 QuipHelper.PlayQuip(SharedState.Combat, g.ToString(), __instance.team, __instance.DisplayName, Mod.LocalizedText.Quips.SupportSpawn, 5f);
             }
 
+            // Check for flee conditions
+            if (__instance.StatCollection.ContainsStatistic(ModStats.Flee_On_Round))
+            {
+                if (SharedState.Combat.TurnDirector.CurrentRound >= __instance.StatCollection.GetValue<int>(ModStats.Flee_On_Round))
+                {
+                    Mod.Log.Info?.Write($"Forcing mission end due to unit: {__instance.DistinctId()} fleeing on round: {SharedState.Combat.TurnDirector.CurrentRound}!");
+
+                    // Quip and force-end the mission
+                    Mod.Log.Debug?.Write("Taunting player.");
+                    Guid g = Guid.NewGuid();
+                    QuipHelper.PlayQuip(SharedState.Combat, g.ToString(), __instance.team, __instance.DisplayName, Mod.LocalizedText.Quips.Retreat, 5f);
+
+                    // End the mission
+                    SharedState.Combat.MessageCenter.PublishMessage(new MissionFailedMessage());
+                }
+                else
+                {
+                    Mod.Log.Info?.Write($"Unit: {__instance.DistinctId()} will flee on round: {__instance.StatCollection.GetValue<int>(ModStats.Flee_On_Round)} currentRound: {SharedState.Combat.TurnDirector.CurrentRound}");
+                }
+            }
+            else if (__instance.MechDef.Chassis.Is<FleeComponent>(out FleeComponent fleeComponent))
+            {
+                // Check trigger
+                if (fleeComponent.TriggerOnAllLinkedActorsDead)
+                {
+                    bool hasAliveChildren = false;
+                    ModState.ParentToLinkedActors.TryGetValue(__instance.DistinctId(), out List<AbstractActor> children);
+                    if (children != null)
+                    {
+                        hasAliveChildren = children.FindAll(child => !child.IsFlaggedForDeath && !child.IsDead).Count > 0;
+                    }
+
+                    if (!hasAliveChildren)
+                    {
+                        // record the state
+                        int roundToFlee = SharedState.Combat.TurnDirector.CurrentRound + fleeComponent.RoundsToDelay;
+                        Mod.Log.Info?.Write($"Marking unit: {__instance.DistinctId()} as fleeing on round: {roundToFlee} due to delay: {fleeComponent.RoundsToDelay}");
+                        __instance.StatCollection.AddStatistic<int>(ModStats.Flee_On_Round, roundToFlee);
+
+                        // Find the particle systems transform
+                        Transform[] childTransforms = __instance.GameRep.GetComponentsInChildren<Transform>(true);
+                        foreach (Transform childTF in childTransforms)
+                        {
+                            Mod.Log.Trace?.Write($"  -- Found transform: {childTF.name}");
+                            if (childTF.name.Equals(fleeComponent.ParticleParentGO, StringComparison.InvariantCultureIgnoreCase))
+                            {                             
+                                Mod.Log.Debug?.Write($" --Enabling particle systems under: {childTF.name}");
+
+                                ParticleSystem[] particleSystems = childTF.GetComponentsInChildren<ParticleSystem>(true);
+                                foreach (ParticleSystem ps in particleSystems)
+                                {
+                                    ps.Stop(true);
+                                    ps.Clear(true);
+                                    ps.Play(true);
+                                }
+
+                                childTF.gameObject.SetActive(true);
+                            }
+                        }
+
+                        // Quip about takeoff
+                        Mod.Log.Debug?.Write("Taunting player.");
+                        Guid g = Guid.NewGuid();
+                        QuipHelper.PlayQuip(SharedState.Combat, g.ToString(), __instance.team, __instance.DisplayName, Mod.LocalizedText.Quips.RetreatPrep, 5f);
+                    }
+                }
+            }
+
         }
     }
 
@@ -64,13 +143,14 @@ namespace MonsterMashup.Patch
             Mod.Log.Trace?.Write($"OnPositionUpdate for actor: {__instance.DistinctId()} => newPos: {position}  heading: {heading}");
 
             // If we're an attached child, make sure we re-align to the parent's target transform and heading when we move.
-            //   If we don't, the model will get it's new position from the actual move sequence and get out of alignment with the parnet
+            //   If we don't, the model will get it's new position from the actual move sequence and get out of alignment with the parent
             bool isAttached = ModState.AttachTransforms.TryGetValue(__instance.DistinctId(), out Transform attachTransform);
             if (isAttached)
             {
                 __instance.GameRep.transform.position = attachTransform.position;
 
                 Mod.Log.Trace?.Write($"  aligning actor");
+                // IF this rotation isn't in place, the units all rotate 90' during the move. Why? No fucking clue.
                 Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
                 Quaternion linkedRot = Quaternion.RotateTowards(__instance.GameRep.transform.rotation, alignVector, 9999f);
                 __instance.GameRep.transform.rotation = linkedRot;

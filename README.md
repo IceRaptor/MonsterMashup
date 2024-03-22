@@ -96,6 +96,25 @@ An example of use:
 	  },
 ```
 
+#### MM_TriggeredFlee Component
+
+The **MM_TriggeredFlee** CustomComponent allows you to mark a unit as needing to flee when certain conditions are met. The only supported condition at this time is 'all linked actors' are dead, as this is intended to be used with the dropships. The condition is checked at the end of the parent's turn, and once activated starts a countdown timer. The mission will be force-failed after a number of rounds, which is configurable.
+
+The properties for this component are:
+
+* **TriggerOnAllLinkedActorsDead**: Triggers when all linked children of the parent are dead or flagged for death
+* **RoundsToDelay**: A number of rounds to wait before auto-failing the mission.
+* **ParticleParentGO**: The name of a Unity game object to enable when the condition is triggered. ParticleSystems underneath this GO will be activated as well.
+
+Example:
+```json
+    "MM_TriggeredFlee": {
+		"TriggerOnAllLinkedActorsDead": true,
+		"RoundsToDelay": 3,
+		"ParticleParentGO": "dust_emitters"
+    }
+```
+
 ### LinkedActor Notes
 
 LinkedActors are the same as any other CU Vehicledef. It's recommended to use the `CustomParts.UnitTypeName = "Turret"` to have the paperdoll display a Turret instead of a vehicle, but that's up to you. 

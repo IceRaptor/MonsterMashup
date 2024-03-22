@@ -18,6 +18,7 @@ namespace MonsterMashup
         public const string Crush_On_Move = "MMASH_Crush_On_Move"; // bool; if true, taunt
         public const string Prevent_Melee = "MMASH_Prevent_Melee"; // bool; if true, cannot be targeted by melee pathnodes
 
+        public const string Flee_On_Round = "MMASH_Flee_On_Round"; // int; combat ends on this turn
         // HBS Values
         public const string HBS_HeatSinkCapacity = "HeatSinkCapacity";
     }

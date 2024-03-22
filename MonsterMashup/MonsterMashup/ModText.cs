@@ -8,6 +8,8 @@ namespace MonsterMashup
         {
             public List<string> Crush = new();
             public List<string> SupportSpawn = new();
+            public List<string> RetreatPrep = new();
+            public List<string> Retreat = new();
         }
         public QuipsConfig Quips = new();
 
@@ -54,6 +56,23 @@ namespace MonsterMashup
                     "Deploy when ready!"
                 };
             }
+
+            if (this.Quips.RetreatPrep.Count == 0)
+            {
+                this.Quips.RetreatPrep = new List<string>()
+                {
+                    "Prep engines for takeoff"
+                };
+            }
+
+            if (this.Quips.Retreat.Count == 0)
+            {
+                this.Quips.Retreat = new List<string>()
+                {
+                    "Go for launch. Get us out of here!"
+                };
+            }
+
         }
     }
 }

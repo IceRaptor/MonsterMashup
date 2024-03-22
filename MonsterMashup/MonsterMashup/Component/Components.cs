@@ -43,7 +43,7 @@ namespace MonsterMashup.Component
     }
 
     [CustomComponent("MM_CombatSpawn")]
-    public class CombatSpwanComponent : SimpleCustomChassis
+    public class CombatSpawnComponent : SimpleCustomChassis
     {
         public SpawnConfig[] Spawns;
     }
@@ -57,4 +57,11 @@ namespace MonsterMashup.Component
         public int RoundsBetweenSpawns = 0; // rounds between spawns
     }
 
+    [CustomComponent("MM_TriggeredFlee")]
+    public class FleeComponent: SimpleCustomChassis
+    {
+        public bool TriggerOnAllLinkedActorsDead = true;
+        public int RoundsToDelay = 10;
+        public string ParticleParentGO = string.Empty;
+    }
 }

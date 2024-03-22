@@ -1,4 +1,4 @@
-# MonsterMashup
+# Monster Mashup
 This mod for the [HBS BattleTech](http://battletechgame.com/) game that allows mod makers to 'mash' multiple CustomUnit units into a single entity. This allows for 'boss' units, such as the Overlord or Union dropships. These units have a central core unit, with attached units that are fixed in place around it. If the central core dies, all linked units die as well. 
 
 This mod requires strong coordination between modeller and modder. Many connections are made using Unity transform names, which can be found in the Unity Editor or AssetBundles. It's a brittle ecosystem that works well enough, but be prepared for some flakiness.

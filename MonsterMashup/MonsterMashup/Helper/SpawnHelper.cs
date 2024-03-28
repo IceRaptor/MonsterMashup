@@ -307,14 +307,19 @@ namespace MonsterMashup.Helper
                 // Align the turrets to the orientation of the parent transform. This allows us to customize where the turrets will be.
                 // We need to align both the visuals (gameRep) and object. The former for display, the latter for LoS calculations
                 //Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
-                fakeVehicle.GameRep.transform.rotation = Quaternion.LookRotation(hexPosition, Vector3.up);
+                //fakeVehicle.GameRep.transform.rotation = Quaternion.LookRotation(hexPosition, Vector3.up);
+                //fakeVehicle.CurrentRotation = fakeVehicle.GameRep.transform.rotation;
+                UnitHelper.AlignVehicleToGround(fakeVehicle.GameRep.transform, 1);
                 fakeVehicle.CurrentRotation = fakeVehicle.GameRep.transform.rotation;
+
                 Mod.Log.Info?.Write($" -- rotated position: {fakeVehicle.GameRep.transform.position}  rotation: {fakeVehicle.GameRep.transform.rotation.eulerAngles}");
 
                 Mod.Log.Info?.Write($" Spawned mech, adding to team: {this.Parent.team} and lance: {this.Lance}.");
                 this.Parent.team.AddUnit(fakeVehicle);
                 fakeVehicle.AddToTeam(this.Parent.team);
                 fakeVehicle.AddToLance(this.Lance);
+
+                fakeVehicle.MechDef.UnitRole = UnitRole.Brawler;
 
                 // Mission Control has a patch that expects a team to be present before this call is made. So it must be performed *after* the addTeam/addLance calls
                 fakeVehicle.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, fakeVehicle, BehaviorTreeIDEnum.CoreAITree);

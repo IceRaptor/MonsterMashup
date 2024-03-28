@@ -1,12 +1,41 @@
 ﻿
 using IRBTModUtils;
 using System;
+using UnityEngine;
 
 namespace MonsterMashup.Helper
 {
 
     public static class UnitHelper
     {
+        public static void AlignVehicleToGround(Transform vehicleTransform, float deltaTime)
+        {
+            int ikLayerMask = LayerMask.GetMask("Terrain", "Obstruction", "Combatant");
+            RaycastHit[] array = Physics.RaycastAll(new Ray(vehicleTransform.position + Vector3.up * 20f, Vector3.down), 40f, ikLayerMask);
+            RaycastHit? raycastHit = null;
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (!(array[i].transform == vehicleTransform))
+                {
+                    if (!raycastHit.HasValue)
+                    {
+                        raycastHit = array[i];
+                    }
+                    else if (raycastHit.Value.point.y < array[i].point.y)
+                    {
+                        raycastHit = array[i];
+                    }
+                }
+            }
+            if (raycastHit.HasValue)
+            {
+                Vector3 normal = raycastHit.Value.normal;
+                Quaternion to = Quaternion.FromToRotation(vehicleTransform.up, normal) * Quaternion.Euler(0f, vehicleTransform.rotation.eulerAngles.y, 0f);
+                vehicleTransform.rotation = Quaternion.RotateTowards(vehicleTransform.rotation, to, 180f * deltaTime);
+                Mod.Log.Debug?.Write($"Vehicle transform rotated to: {to}");
+            }
+        }
+
         public static void CrushTarget(Mech attacker, AbstractActor target, bool quip)
         {
             Mod.Log.Debug?.Write("Taunting player.");

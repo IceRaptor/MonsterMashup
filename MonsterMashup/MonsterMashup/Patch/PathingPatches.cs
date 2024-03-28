@@ -77,7 +77,7 @@ namespace MonsterMashup.Patch
                         Vector2 axialCoords2 = SharedState.Combat.HexGrid.CartesianToHexAxial(hexGridPoint);
                         if (SharedState.Combat.HexGrid.HexAxialRound(axialCoords2) == vector)
                         {
-                            Mod.Log.Debug?.Write($" -- hexPoint: {hexGridPoint} conflicts with pos: {pos}, marking actor: {actor.DistinctId()} as colliding.");
+                            Mod.Log.Debug?.Write($" -- hexPoint: {hexGridPoint} conflicts with pos: {pos}, actor: {actor.DistinctId()} collides with unit: {unit.DistinctId()}.");
                             occupyingActor = actor;
                             __result = true;
                             return;

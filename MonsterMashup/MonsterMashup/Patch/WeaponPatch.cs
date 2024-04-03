@@ -12,7 +12,7 @@ namespace MonsterMashup.Patch
         {
             if (__instance == null || target == null) return;
 
-            Mod.Log.Debug?.Write($"WillFireAtTargetFromPosition for weapon: {__instance.UIName}_{__instance.uid} has result: {__result}");
+            Mod.Log.Trace?.Write($"WillFireAtTargetFromPosition for weapon: {__instance.UIName}_{__instance.uid} has raw result: {__result}");
 
             if (__result == false) return; // Out ammo or has no ammo
 

@@ -59,7 +59,7 @@ namespace MonsterMashup.Patch
                     bool isFriendly = SharedState.Combat.HostilityMatrix.IsFriendly(unit.team, actor.team);
                     if (isFriendly)
                     {
-                        Mod.Log.Debug?.Write($" -- unit: {unit.DistinctId()} is friendly to actor: {actor.DistinctId()}, marking as no-colliding.");
+                        Mod.Log.Trace?.Write($" -- unit: {unit.DistinctId()} is friendly to actor: {actor.DistinctId()}, marking as no-colliding.");
                         __result = false;
                         return;
                     }

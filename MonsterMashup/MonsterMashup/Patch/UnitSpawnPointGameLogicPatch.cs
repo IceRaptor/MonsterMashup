@@ -6,6 +6,7 @@ using MonsterMashup.Helper;
 using MonsterMashup.UI;
 using System;
 using System.Collections.Generic;
+using UIWidgets;
 using UnityEngine;
 
 namespace MonsterMashup.Patch

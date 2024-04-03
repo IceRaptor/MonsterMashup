@@ -117,8 +117,8 @@ namespace MonsterMashup.Helper
 
                 // Align the turrets to the orientation of the parent transform. This allows us to customize where the turrets will be.
                 // We need to align both the visuals (gameRep) and object. The former for display, the latter for LoS calculations
-                //Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
-                Quaternion alignVector = attachTransform.rotation;
+                Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
+                //Quaternion alignVector = attachTransform.rotation;
                 fakeVehicle.GameRep.transform.rotation = Quaternion.RotateTowards(fakeVehicle.GameRep.transform.rotation, alignVector, 9999f);
                 fakeVehicle.CurrentRotation = fakeVehicle.GameRep.transform.rotation;
                 Mod.Log.Info?.Write($" -- rotated position: {fakeVehicle.GameRep.transform.position}  rotation: {fakeVehicle.GameRep.transform.rotation.eulerAngles}");

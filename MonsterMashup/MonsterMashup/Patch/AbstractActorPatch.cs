@@ -2,6 +2,7 @@
 using IRBTModUtils.Extension;
 using MonsterMashup.Helper;
 using MonsterMashup.UI;
+using System.Collections.Generic;
 
 namespace MonsterMashup.Patch
 {
@@ -41,8 +42,40 @@ namespace MonsterMashup.Patch
     [HarmonyPatch(typeof(AbstractActor), "OnPlayerVisibilityChanged")]
     static class AbstractActor_OnPlayerVisibilityChanged
     {
+
+        static void Prefix(ref bool __runOriginal, AbstractActor __instance, ref VisibilityLevel newLevel)
+        {
+            if (!__runOriginal) return; // nothing to do
+            if (__instance == null) return; // nothing to do
+
+            // Check for parent's visibility, and try to match
+            string parentUID = __instance.StatCollection.GetValue<string>(ModStats.Linked_Parent_Actor_UID);
+            if (!string.IsNullOrEmpty(parentUID))
+            {
+                AbstractActor parent = SharedState.Combat.FindActorByGUID(parentUID);
+                if (parent != null && parent.GameRep != null)
+                {
+                    VisibilityLevel parentVisibility = SharedState.Combat.LocalPlayerTeam.VisibilityToTarget(parent);
+                    Mod.Log.Info?.Write($"Target: {__instance.DistinctId()} has linked parent: {parentUID} with visibility: {parentVisibility}");
+                    if (parentVisibility < VisibilityLevel.LOSFull)
+                    {
+                        Mod.Log.Info?.Write($"  --parent is not visible, hiding.");
+                        newLevel = VisibilityLevel.None;
+                        return;
+                    }
+                    else if (parentVisibility == VisibilityLevel.LOSFull)
+                    {
+                        Mod.Log.Info?.Write($"  --parent is visible, force showing.");
+                        newLevel = VisibilityLevel.LOSFull;
+                        return;
+                    }
+                }
+            }
+        }
+
         static void Postfix(AbstractActor __instance, VisibilityLevel newLevel)
         {
+            if (__instance == null) return; // nothing to do
             Mod.Log.Info?.Write($"AA:OnPlayerVisibilityChanged:POST INVOKED for: {__instance.DistinctId()}");
 
             if (newLevel == VisibilityLevel.LOSFull && Mod.Config.DeveloperOptions.EnableFootprintVis)
@@ -53,6 +86,31 @@ namespace MonsterMashup.Patch
                     footprintVis.Show();
                 }
             }
+
+            // Check for linked turrets, hide them if less than full vis
+            bool hasKey = ModState.ParentToLinkedActors.TryGetValue(__instance.DistinctId(), out List<AbstractActor> children);
+            if (hasKey)
+            {
+                VisibilityLevel parentVisibility = SharedState.Combat.LocalPlayerTeam.VisibilityToTarget(__instance);
+                foreach (AbstractActor child in children)
+                {
+                    VisibilityLevel childVisiblity = SharedState.Combat.LocalPlayerTeam.VisibilityToTarget(child);
+                    Mod.Log.Info?.Write($"Parent: {__instance.DistinctId()} has visibilty: {parentVisibility}, child: {child.DistinctId()} has visibilty: {childVisiblity}");
+                    
+                    if (parentVisibility < VisibilityLevel.LOSFull)
+                    {
+                        Mod.Log.Info?.Write($"Parent: {__instance.DistinctId()} has visibility < LOFFull, hiding child: {child.DistinctId()}.");
+                        child.OnPlayerVisibilityChanged(VisibilityLevel.None);
+                    }
+                    else if (parentVisibility == VisibilityLevel.LOSFull)
+                    {
+                        Mod.Log.Info?.Write($"Parent: {__instance.DistinctId()} has visibility == LOFFull, showing child: {child.DistinctId()}.");
+                        child.OnPlayerVisibilityChanged(VisibilityLevel.LOSFull);
+                    }
+                }
+
+            }
+
         }
     }
 

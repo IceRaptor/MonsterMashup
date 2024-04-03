@@ -149,7 +149,7 @@ namespace MonsterMashup.Patch
             {
                 __instance.GameRep.transform.position = attachTransform.position;
 
-                Mod.Log.Trace?.Write($"  aligning actor");
+                Mod.Log.Trace?.Write($"  aligning actor: {__instance.DistinctId()}");
                 // IF this rotation isn't in place, the units all rotate 90' during the move. Why? No fucking clue.
                 Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
                 Quaternion linkedRot = Quaternion.RotateTowards(__instance.GameRep.transform.rotation, alignVector, 9999f);

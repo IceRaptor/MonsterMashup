@@ -138,7 +138,7 @@
 			"DamageLevel": "Functional"
 		},
 		{
-			"ComponentDefID": "Gear_Union_Turret_Top_Right_Front",
+			"ComponentDefID": "Gear_Union_Turret_Top_Right_Rear",
 			"ComponentDefType": "Upgrade",
 			"MountedLocation": "Right",
 			"HardpointSlot": -1,

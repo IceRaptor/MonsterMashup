@@ -10,7 +10,7 @@
   },
   "CustomParts": {
     "AOEHeight": 0,
-    "FiringArc": 90,
+	"FiringArc": 120,
 	"UnitTypeName" : "TURRET",
     "FakeVehicle": true,
 	"TurretArmorReadout": true,

@@ -2,7 +2,7 @@
     "Name": "MonsterMashup",
     "Enabled": true,
 	"Hidden": true,
-    "Version": "0.2.2",
+    "Version": "3.1.0",
     "Description": "Builds monster units by mashing bases and turrets",
     "Author": "FrostRaptor",
     "Website": "https://github.com/IceRaptor/MonsterMashup/",

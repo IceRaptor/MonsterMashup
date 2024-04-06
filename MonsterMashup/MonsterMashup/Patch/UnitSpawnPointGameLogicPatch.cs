@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using UIWidgets;
 using UnityEngine;
+using static Localize.Text;
 
 namespace MonsterMashup.Patch
 {
@@ -77,23 +78,19 @@ namespace MonsterMashup.Patch
                 Mod.Log.Debug?.Write($"Actor: {mech.DistinctId()} has spawn configs, creating new spawnstates");
                 foreach (SpawnConfig spawnConfig in timedSpawnComponent.Spawns)
                 {
-                    SupportSpawnState sss = new SupportSpawnState();
-                    sss.Init(mech, spawnConfig);
                     Mod.Log.Debug?.Write($"Spawn state initialized for: {spawnConfig.CUVehicleDefId}_{spawnConfig.PilotDefId}");
 
-                    bool hasKey = ModState.ChildSpawns.TryGetValue(mech.DistinctId(), out List<SupportSpawnState> supportSpawns);
+                    bool hasKey = ModState.ParentState.TryGetValue(mech, out ParentRelationships parentRelationships);
                     if (!hasKey)
                     {
-                        supportSpawns = new List<SupportSpawnState>
-                        {
-                            sss
-                        };
-                        ModState.ChildSpawns.Add(mech.DistinctId(), supportSpawns);
+                        Mod.Log.Info?.Write($"Relationships not initialized for parent: {mech.DistinctId()}, initing");
+                        parentRelationships = new ParentRelationships(mech);
+                        ModState.ParentState.Add(mech, parentRelationships);
                     }
-                    else
-                    {
-                        supportSpawns.Add(sss);
-                    }
+
+                    SupportSpawnConfig sss = new SupportSpawnConfig();
+                    sss.Init(mech, spawnConfig, parentRelationships.SupportSpawnLance);
+                    parentRelationships.SupportSpawnConfigs.Add(sss);
                 }
             }
             else

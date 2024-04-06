@@ -28,9 +28,9 @@
 		<AssemblyTitle>MonsterMashup</AssemblyTitle>
 		<Product>MonsterMashup</Product>
 		<Copyright>Copyright ©  2023</Copyright>
-    <AssemblyVersion>3.0.4</AssemblyVersion>
-    <FileVersion>3.0.4</FileVersion>
-    <LangVersion>11</LangVersion>
+		<AssemblyVersion>3.1.0</AssemblyVersion>
+		<FileVersion>3.1.0</FileVersion>
+		<LangVersion>11</LangVersion>
 	</PropertyGroup>
 
   <Target Name="AfterBuildMigrated" AfterTargets="CopyFilesToOutputDirectory">
@@ -84,10 +84,10 @@
 		<Reference Include="UnityEngine.CoreModule">
 			<Private>False</Private>
 		</Reference>
-    <Reference Include="UnityEngine.ParticleSystemModule">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.PhysicsModule">
+		<Reference Include="UnityEngine.ParticleSystemModule">
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
 			<Private>False</Private>
 		</Reference>
 	</ItemGroup>

@@ -1,13 +1,62 @@
 ﻿using BattleTech;
 using IRBTModUtils;
 using IRBTModUtils.Extension;
+using MonsterMashup.AI;
 using MonsterMashup.Component;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Localize.Text;
 
 namespace MonsterMashup.Helper
 {
+
+    public class ParentRelationships
+    {
+        AbstractActor parent;
+
+        private List<AbstractActor> linkedActors = new List<AbstractActor>();
+        private Dictionary<AbstractActor, Transform> linkedActorTransforms = new Dictionary<AbstractActor, Transform> { };
+        private Lance linkedActorsLance;
+
+        private List<SupportSpawnConfig> supportSpawnConfigs = new List<SupportSpawnConfig>();
+        private List<AbstractActor> spawnedSupportActors = new List<AbstractActor>();
+        private Lance supportSpawnLance;
+
+        public List<AbstractActor> LinkedActors { get => linkedActors; set => linkedActors = value; }
+        public Dictionary<AbstractActor, Transform> LinkedActorTransforms { get => linkedActorTransforms; set => linkedActorTransforms = value; }
+        public Lance LinkedActorsLance { get => linkedActorsLance; set => linkedActorsLance = value; }
+
+        public List<SupportSpawnConfig> SupportSpawnConfigs { get => supportSpawnConfigs; set => supportSpawnConfigs = value; }
+        public List<AbstractActor> SpawnedSupportActors { get => spawnedSupportActors; set => spawnedSupportActors = value; }
+        public Lance SupportSpawnLance { get => supportSpawnLance; set => supportSpawnLance = value; }
+
+        public ParentRelationships(AbstractActor parent)
+        {
+            this.parent = parent;
+            LinkedActorsLance = CreateLinkedLance(parent.team, parent.lance);
+            SupportSpawnLance = CreateLinkedLance(parent.team, parent.lance);
+        }
+
+        internal static Lance CreateLinkedLance(Team parentTeam, Lance parentLance)
+        {
+            Lance lance = new Lance(parentTeam, new BattleTech.Framework.LanceSpawnerRef[] { });
+            Guid g = Guid.NewGuid();
+            string lanceGuid = LanceSpawnerGameLogic.GetLanceGuid(g.ToString());
+            lance.lanceGuid = lanceGuid;
+            Mod.Log.Info?.Write($"Created new linked Lance: {lance.lanceGuid} for team: {parentTeam.DisplayName}");
+            SharedState.Combat.ItemRegistry.AddItem(lance);
+            parentTeam.lances.Add(lance);
+
+            if (parentLance.IsAlerted)
+            {
+                lance.BehaviorVariables.SetVariable(BehaviorVariableName.Bool_Alerted, new BehaviorVariableValue(b: true));
+            }
+
+            return lance;
+        }
+    }
+
     public class SpawnHelper
     {
         public static void SpawnAllLinkedActors()
@@ -15,7 +64,6 @@ namespace MonsterMashup.Helper
             try
             {
                 Mod.Log.Info?.Write($"Iterating {ModState.ComponentsToLink.Count} components to link actors");
-                List<AbstractActor> parents = new List<AbstractActor>();
                 foreach ((MechComponent sourceComponent, LinkedActorComponent linkedTurret) in ModState.ComponentsToLink)
                 {
                     AbstractActor parent = sourceComponent.parent;
@@ -51,17 +99,15 @@ namespace MonsterMashup.Helper
                     Mod.Log.Info?.Write($" -- Found attach point: {linkedTurret.AttachPoint}");
 
                     // Spawned turrets get a new LanceId. This should prevent them messing with the parent's objectives.
-                    Dictionary<string, Lance> lanceDefsByParent = new Dictionary<string, Lance>();
-                    if (!lanceDefsByParent.TryGetValue(parent.DistinctId(), out Lance linkedLance))
+                    bool parentStateFound = ModState.ParentState.TryGetValue(parent, out ParentRelationships parentRelationships);
+                    if (!parentStateFound)
                     {
-                        Mod.Log.Info?.Write($"Lance not found for parent: {parent.DistinctId()}, creating new.");
-                        linkedLance = CreateLinkedLance(parent.team, parent.lance);
-                        lanceDefsByParent.Add(parent.DistinctId(), linkedLance);
+                        Mod.Log.Info?.Write($"Relationships not initialized for parent: {parent.DistinctId()}, initing");
+                        parentRelationships = new ParentRelationships(parent);
+                        ModState.ParentState.Add(parent, parentRelationships);
                     }
 
-                    SpawnLinkedCUVehicle(parent, linkedLance, sourceComponent, linkedTurret, attachTransform);
-
-                    parents.Add(parent);
+                    SpawnLinkedCUVehicle(parent, parentRelationships, sourceComponent, linkedTurret, attachTransform);
                 }
             }
             catch (Exception e)
@@ -70,27 +116,9 @@ namespace MonsterMashup.Helper
             }
         }
 
-        public static Lance CreateLinkedLance(Team parentTeam, Lance parentLance)
-        {
-            Lance lance = new Lance(parentTeam, new BattleTech.Framework.LanceSpawnerRef[] { });
-            Guid g = Guid.NewGuid();
-            string lanceGuid = LanceSpawnerGameLogic.GetLanceGuid(g.ToString());
-            lance.lanceGuid = lanceGuid;
-            Mod.Log.Info?.Write($"Created new linked Lance: {lance.lanceGuid} for team: {parentTeam.DisplayName}");
-            SharedState.Combat.ItemRegistry.AddItem(lance);
-            parentTeam.lances.Add(lance);
-
-            if (parentLance.IsAlerted)
-            {
-                lance.BehaviorVariables.SetVariable(BehaviorVariableName.Bool_Alerted, new BehaviorVariableValue(b: true));
-            }
-
-            return lance;
-        }
-
         // Vehicles are mechs under the covers, so spawn mechs
-        internal static void SpawnLinkedCUVehicle(AbstractActor parent, Lance lance, MechComponent sourceComponent,
-            LinkedActorComponent linkedTurret, Transform attachTransform)
+        internal static void SpawnLinkedCUVehicle(AbstractActor parent, ParentRelationships parentRelationships, 
+            MechComponent sourceComponent, LinkedActorComponent linkedTurret, Transform attachTransform)
         {
             PilotDef pilotDef = SharedState.Combat.DataManager.PilotDefs.Get(linkedTurret.PilotDefId);
             MechDef mechDef = SharedState.Combat.DataManager.MechDefs.GetOrCreate(linkedTurret.CUVehicleDefId);
@@ -117,19 +145,20 @@ namespace MonsterMashup.Helper
 
                 // Align the turrets to the orientation of the parent transform. This allows us to customize where the turrets will be.
                 // We need to align both the visuals (gameRep) and object. The former for display, the latter for LoS calculations
-                Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
-                //Quaternion alignVector = attachTransform.rotation;
+                //Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
+                Quaternion alignVector = attachTransform.rotation;
                 fakeVehicle.GameRep.transform.rotation = Quaternion.RotateTowards(fakeVehicle.GameRep.transform.rotation, alignVector, 9999f);
                 fakeVehicle.CurrentRotation = fakeVehicle.GameRep.transform.rotation;
                 Mod.Log.Info?.Write($" -- rotated position: {fakeVehicle.GameRep.transform.position}  rotation: {fakeVehicle.GameRep.transform.rotation.eulerAngles}");
 
-                Mod.Log.Info?.Write($" Spawned mech, adding to team.");
+                Mod.Log.Info?.Write($" Spawned mech, adding to team: {parent.team} and lance: {parentRelationships.LinkedActorsLance}");
                 parent.team.AddUnit(fakeVehicle);
                 fakeVehicle.AddToTeam(parent.team);
-                fakeVehicle.AddToLance(lance);
+                fakeVehicle.AddToLance(parentRelationships.LinkedActorsLance);
 
                 // Mission Control has a patch that expects a team to be present before this call is made. So it must be performed *after* the addTeam/addLance calls
                 fakeVehicle.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, fakeVehicle, BehaviorTreeIDEnum.CoreAITree);
+                fakeVehicle.BehaviorTree.RootNode = MM_AI_ImmobileTurret.InitRootNode(fakeVehicle.BehaviorTree, fakeVehicle, fakeVehicle.BehaviorTree.battleTechGame);
                 Mod.Log.Debug?.Write("Updated behaviorTree");
 
                 // Notify everything else that the turret is active
@@ -171,19 +200,10 @@ namespace MonsterMashup.Helper
                 LinkedEntityHelper.ProcessWeapons(fakeVehicle);
 
                 // Populate the modstate
+                parentRelationships.LinkedActors.Add(fakeVehicle);
+                parentRelationships.LinkedActorTransforms.Add(fakeVehicle, attachTransform);
                 ModState.Parents.Add(parent);
-                ModState.LinkedActorsToParent.Add(fakeVehicle.DistinctId(), parent);
-                bool hasKey = ModState.ParentToLinkedActors.TryGetValue(parent.DistinctId(), out List<AbstractActor> children);
-                if (hasKey)
-                {
-                    children.Add(fakeVehicle);
-                }
-                else
-                {
-                    ModState.ParentToLinkedActors.Add(parent.DistinctId(), new List<AbstractActor>() { fakeVehicle });
-                }
-                
-                ModState.AttachTransforms.Add(fakeVehicle.DistinctId(), attachTransform);
+                SharedState.Combat.ItemRegistry.AddItem(fakeVehicle);
 
                 Mod.Log.Info?.Write($"Spawned vehicleDefId: {linkedTurret.CUVehicleDefId} + pilotDefId: {linkedTurret.PilotDefId} at attach: {attachTransform.position}");
             }
@@ -193,11 +213,9 @@ namespace MonsterMashup.Helper
                 Mod.Log.Error?.Write("InnerEx: " + e.InnerException.StackTrace);
             }
         }
-
-
     }
 
-    public class SupportSpawnState
+    public class SupportSpawnConfig
     {
         public AbstractActor Parent;
         public SpawnConfig Config;
@@ -208,7 +226,7 @@ namespace MonsterMashup.Helper
         
         private bool IsReady = false;
 
-        public void Init(AbstractActor parent, SpawnConfig config)
+        public void Init(AbstractActor parent, SpawnConfig config, Lance lance)
         {
             this.Parent = parent;
             this.Config = config;
@@ -232,14 +250,12 @@ namespace MonsterMashup.Helper
                 return;
             }
 
-            // Spawned turrets get a new LanceId. This should prevent them messing with the parent's objectives.
-            Mod.Log.Info?.Write($"Creating new lance for parent: {this.Parent.DistinctId()}");
-            this.Lance = SpawnHelper.CreateLinkedLance(this.Parent.team, this.Parent.lance);
+            this.Lance = lance;
 
             IsReady = true;
         }
 
-        public bool TrySpawn()
+        public AbstractActor TrySpawn()
         {
             Mod.Log.Info?.Write($"Trying spawn for parent: {this.Parent.DistinctId()} at point: {this.Config.AttachPoint}");
 
@@ -248,11 +264,11 @@ namespace MonsterMashup.Helper
                 $"  isInterleaved: {SharedState.Combat.TurnDirector.IsInterleaved}\n" +
                 $"  spawnCount: {this.SpawnCount}  maxSpawns: {this.Config.MaxSpawns}");
 
-            if (!this.IsReady) return false;
-            if (this.Parent.IsDead || this.Parent.IsFlaggedForDeath) return false; // nothing to do
-            if (this.Config.MaxSpawns == 0) return false; // nothing to do
-            if (this.SpawnCount >= this.Config.MaxSpawns) return false; // already spawned everyone
-            if (!SharedState.Combat.TurnDirector.IsInterleaved) return false; // not in combat
+            if (!this.IsReady) return null;
+            if (this.Parent.IsDead || this.Parent.IsFlaggedForDeath) return null; // nothing to do
+            if (this.Config.MaxSpawns == 0) return null; // nothing to do
+            if (this.SpawnCount >= this.Config.MaxSpawns) return null; // already spawned everyone
+            if (!SharedState.Combat.TurnDirector.IsInterleaved) return null; // not in combat
 
             // Check delay since last spawn turn
             int nextSpawnRound = this.LastSpawnedRound + this.Config.RoundsBetweenSpawns;
@@ -263,15 +279,16 @@ namespace MonsterMashup.Helper
                 Mod.Log.Debug?.Write($"Spawning unit: {this.Config.CUVehicleDefId}_{this.Config.PilotDefId} on round: {this.Parent.Combat.TurnDirector.CurrentRound}");
                 this.LastSpawnedRound = this.Parent.Combat.TurnDirector.CurrentRound;
                 this.SpawnCount++;
-                SpawnUnit();
-                return true;
+                return SpawnSupportUnit();
             }
 
-            return false;
+            return null;
         }
 
-        internal void SpawnUnit()
+        internal AbstractActor SpawnSupportUnit()
         {
+            AbstractActor spawnedUnit = null;
+
             Mod.Log.Debug?.Write($"Fetching VehicleDefId: {this.Config.CUVehicleDefId} + pilotDefId: {this.Config.PilotDefId}");
             Mod.Log.Trace?.Write($"isNull: DataManager: {SharedState.Combat.DataManager == null}  " +
                 $"PilotDefs: {SharedState.Combat.DataManager.PilotDefs}  " +
@@ -290,7 +307,7 @@ namespace MonsterMashup.Helper
                 if (fakeVehicle == null)
                 {
                     Mod.Log.Warn?.Write($"Failed to CREATE vehicleDef: {this.Config.CUVehicleDefId} + pilotDefId: {this.Config.PilotDefId} !");
-                    return;
+                    return null;
                 }
 
                 // Find the closest hex grid point
@@ -308,7 +325,6 @@ namespace MonsterMashup.Helper
                 // We need to align both the visuals (gameRep) and object. The former for display, the latter for LoS calculations
                 //Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
                 //fakeVehicle.GameRep.transform.rotation = Quaternion.LookRotation(hexPosition, Vector3.up);
-                //fakeVehicle.CurrentRotation = fakeVehicle.GameRep.transform.rotation;
                 UnitHelper.AlignVehicleToGround(fakeVehicle.GameRep.transform, 1);
                 fakeVehicle.CurrentRotation = fakeVehicle.GameRep.transform.rotation;
 
@@ -320,11 +336,15 @@ namespace MonsterMashup.Helper
                 fakeVehicle.AddToLance(this.Lance);
 
                 fakeVehicle.MechDef.UnitRole = UnitRole.Brawler;
+                fakeVehicle.DynamicUnitRole = UnitRole.Brawler;
 
                 // Mission Control has a patch that expects a team to be present before this call is made. So it must be performed *after* the addTeam/addLance calls
                 fakeVehicle.BehaviorTree = BehaviorTreeFactory.MakeBehaviorTree(SharedState.Combat.BattleTechGame, fakeVehicle, BehaviorTreeIDEnum.CoreAITree);
+                //fakeVehicle.BehaviorTree.RootNode = MM_AI_ImmobileTurret.InitRootNode(fakeVehicle.BehaviorTree, fakeVehicle, fakeVehicle.BehaviorTree.battleTechGame);
                 Mod.Log.Debug?.Write("Updated behaviorTree");
-
+                
+                SharedState.Combat.ItemRegistry.AddItem(fakeVehicle);
+                
                 // Notify everything else that the turret is active
                 UnitSpawnedMessage message = new UnitSpawnedMessage("MONSTER_MASH", fakeVehicle.GUID);
                 SharedState.Combat.MessageCenter.PublishMessage(message);
@@ -334,12 +354,18 @@ namespace MonsterMashup.Helper
 
                 // Add the unit to the initiative tracker
                 SharedState.CombatHUD.PhaseTrack.AddIconTracker(fakeVehicle);
+
+                fakeVehicle.AlertLance();
+
+                spawnedUnit = fakeVehicle;
             }
             catch (Exception e)
             {
                 Mod.Log.Error?.Write(e, $"Failed to SPAWN vehicleDefId: {this.Config.CUVehicleDefId} + pilotDefId: {this.Config.PilotDefId} !");
                 Mod.Log.Error?.Write("InnerEx: " + e.InnerException.StackTrace);
             }
+
+            return spawnedUnit;
         }
     }
    

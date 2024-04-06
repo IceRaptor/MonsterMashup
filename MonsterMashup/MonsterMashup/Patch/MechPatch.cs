@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static BattleTech.SimGameBattleSimulator;
+using static Localize.Text;
 
 namespace MonsterMashup.Patch
 {
@@ -42,16 +43,26 @@ namespace MonsterMashup.Patch
     {
         static void Postfix(Mech __instance, string sourceID, int stackItemID)
         {
-            bool hasSpawns = ModState.ChildSpawns.TryGetValue(__instance.DistinctId(), out List<SupportSpawnState> spawns);
+
+            if (__instance == null) return; // nothing to do
+
+            bool hasParentState = ModState.ParentState.TryGetValue(__instance, out ParentRelationships parentRelationships);
+
+            // Check for child spawns
             bool didSpawn = false;
-            if (hasSpawns)
+            if (hasParentState && parentRelationships.SupportSpawnConfigs != null && parentRelationships.SupportSpawnConfigs.Count > 0)
             {
                 Mod.Log.Debug?.Write($"Actor: {__instance.DistinctId()} has spawns, iterating configs.");
-                foreach (SupportSpawnState state in spawns)
+                foreach (SupportSpawnConfig state in parentRelationships.SupportSpawnConfigs)
                 {
                     Mod.Log.Debug?.Write($"Actor: {__instance.DistinctId()} has spawns, iterating configs.");
-                    if (state.TrySpawn())
+                    AbstractActor spawnedUnit = state.TrySpawn();
+                    if (spawnedUnit != null)
+                    {
                         didSpawn = true;
+                        parentRelationships.SpawnedSupportActors.Add(spawnedUnit);
+                    }
+                 
                 }
             }
 
@@ -89,10 +100,10 @@ namespace MonsterMashup.Patch
                 if (fleeComponent.TriggerOnAllLinkedActorsDead)
                 {
                     bool hasAliveChildren = false;
-                    ModState.ParentToLinkedActors.TryGetValue(__instance.DistinctId(), out List<AbstractActor> children);
-                    if (children != null)
+
+                    if (hasParentState)
                     {
-                        hasAliveChildren = children.FindAll(child => !child.IsFlaggedForDeath && !child.IsDead).Count > 0;
+                        hasAliveChildren = parentRelationships.LinkedActors.FindAll(child => !child.IsFlaggedForDeath && !child.IsDead).Count > 0;
                     }
 
                     if (!hasAliveChildren)
@@ -140,22 +151,33 @@ namespace MonsterMashup.Patch
     {
         static void Prefix(ref bool __runOriginal, Mech __instance, ref Vector3 position, ref Quaternion heading, int stackItemUID, bool updateDesignMask, List<DesignMaskDef> remainingMasks, bool skipLogging = false)
         {
+            if (__instance == null) return; // nothing to do
+            if (!__runOriginal) return; // nothing to do
+
             Mod.Log.Trace?.Write($"OnPositionUpdate for actor: {__instance.DistinctId()} => newPos: {position}  heading: {heading}");
 
             // If we're an attached child, make sure we re-align to the parent's target transform and heading when we move.
             //   If we don't, the model will get it's new position from the actual move sequence and get out of alignment with the parent
-            bool isAttached = ModState.AttachTransforms.TryGetValue(__instance.DistinctId(), out Transform attachTransform);
-            if (isAttached)
+            if (__instance.StatCollection.ContainsStatistic(ModStats.Linked_Parent_Actor_UID))
             {
-                __instance.GameRep.transform.position = attachTransform.position;
+                string parentUID = __instance.StatCollection.GetValue<string>(ModStats.Linked_Parent_Actor_UID);
+                AbstractActor parent = SharedState.Combat.FindActorByGUID(parentUID);
+                bool wasFound = ModState.ParentState.TryGetValue(parent, out ParentRelationships parentRelationships);
+                if (wasFound)
+                {
+                    Transform attachTransform = parentRelationships.LinkedActorTransforms[__instance];
+                    __instance.GameRep.transform.position = attachTransform.position;
 
-                Mod.Log.Trace?.Write($"  aligning actor: {__instance.DistinctId()}");
-                // IF this rotation isn't in place, the units all rotate 90' during the move. Why? No fucking clue.
-                Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
-                Quaternion linkedRot = Quaternion.RotateTowards(__instance.GameRep.transform.rotation, alignVector, 9999f);
-                __instance.GameRep.transform.rotation = linkedRot;
-                position = attachTransform.position;
-                heading = linkedRot;
+                    Mod.Log.Trace?.Write($"  aligning actor: {__instance.DistinctId()}");
+                    // IF this rotation isn't in place, the units all rotate 90' during the move. Why? No fucking clue.
+                    //Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(90f, 0f, 0f);
+                    Quaternion alignVector = attachTransform.rotation * Quaternion.Euler(0f, 0f, 0f);
+                    Quaternion linkedRot = Quaternion.RotateTowards(__instance.GameRep.transform.rotation, alignVector, 9999f);
+                    __instance.GameRep.transform.rotation = linkedRot;
+                    position = attachTransform.position;
+                    heading = linkedRot;
+
+                }
             }
 
             __runOriginal = true;

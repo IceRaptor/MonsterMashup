@@ -88,14 +88,15 @@ namespace MonsterMashup.Patch
             }
 
             // Check for linked turrets, hide them if less than full vis
-            bool hasKey = ModState.ParentToLinkedActors.TryGetValue(__instance.DistinctId(), out List<AbstractActor> children);
+            bool hasKey = ModState.ParentState.TryGetValue(__instance, out ParentRelationships parentRelationships);
             if (hasKey)
             {
                 VisibilityLevel parentVisibility = SharedState.Combat.LocalPlayerTeam.VisibilityToTarget(__instance);
-                foreach (AbstractActor child in children)
+                Mod.Log.Info?.Write($"Parent: {__instance.DistinctId()} has visibilty: {parentVisibility}");
+                foreach (AbstractActor child in parentRelationships.LinkedActors)
                 {
                     VisibilityLevel childVisiblity = SharedState.Combat.LocalPlayerTeam.VisibilityToTarget(child);
-                    Mod.Log.Info?.Write($"Parent: {__instance.DistinctId()} has visibilty: {parentVisibility}, child: {child.DistinctId()} has visibilty: {childVisiblity}");
+                    Mod.Log.Info?.Write($"  --child: {child.DistinctId()} has visibilty: {childVisiblity}");
                     
                     if (parentVisibility < VisibilityLevel.LOSFull)
                     {
